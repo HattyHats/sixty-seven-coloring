@@ -99,24 +99,31 @@
     color:rgba(255,255,255,.65); letter-spacing:1px; opacity:0;
     animation:fadeUp .8s ease 3.2s forwards;
   }
-  #glitchName {
-    color:#ffd93d; position:relative; display:inline-block;
-    animation:glitch 2.8s 3.8s infinite;
+  /* ── Shared glitch base ── */
+  .glitch-name {
+    position:relative; display:inline-block;
+    font-size:clamp(1.1rem,3.5vw,1.6rem);
   }
-  #glitchName::before,#glitchName::after {
-    content:attr(data-text); position:absolute; left:0; top:0; width:100%; overflow:hidden;
+  .glitch-name::before, .glitch-name::after {
+    content:attr(data-text); position:absolute; left:0; top:0;
+    width:100%; overflow:hidden; pointer-events:none;
   }
-  #glitchName::before {
-    color:#ff6b6b; animation:glitchT 2.8s 3.8s infinite;
-    clip-path:polygon(0 0,100% 0,100% 40%,0 40%);
-  }
-  #glitchName::after {
-    color:#4d96ff; animation:glitchB 2.8s 3.8s infinite;
-    clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%);
-  }
-  @keyframes glitch  { 0%,90%,100%{transform:translate(0)} 91%{transform:translate(-3px,1px)} 93%{transform:translate(3px,-1px)} 95%{transform:translate(-2px,2px)} 97%{transform:translate(2px,-2px)} }
-  @keyframes glitchT { 0%,90%,100%{transform:translate(0);opacity:0} 91%{transform:translate(4px,-2px);opacity:.85} 93%{transform:translate(-4px,1px);opacity:.85} 95%{transform:translate(2px,1px);opacity:.85} 97%{transform:translate(-2px,-1px);opacity:.85} }
-  @keyframes glitchB { 0%,90%,100%{transform:translate(0);opacity:0} 91%{transform:translate(-4px,2px);opacity:.85} 93%{transform:translate(4px,-1px);opacity:.85} 95%{transform:translate(-2px,-1px);opacity:.85} 97%{transform:translate(2px,1px);opacity:.85} }
+  .glitch-name::before { clip-path:polygon(0 0,100% 0,100% 40%,0 40%); }
+  .glitch-name::after  { clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%); }
+
+  /* HattyHats — gold, glitches first */
+  #glitchHatty { color:#ffd93d; text-shadow:0 0 16px rgba(255,211,61,.6); animation:glitch 3.2s 3.8s infinite; }
+  #glitchHatty::before { color:#ff6b6b; animation:glitchT 3.2s 3.8s infinite; }
+  #glitchHatty::after  { color:#4d96ff; animation:glitchB 3.2s 3.8s infinite; }
+
+  /* LittleHats — mint, glitches offset */
+  #glitchLittle { color:#6bcb77; text-shadow:0 0 16px rgba(107,203,119,.6); animation:glitch 3.2s 5.4s infinite; }
+  #glitchLittle::before { color:#f15bb5; animation:glitchT 3.2s 5.4s infinite; }
+  #glitchLittle::after  { color:#ffd93d; animation:glitchB 3.2s 5.4s infinite; }
+
+  @keyframes glitch  { 0%,88%,100%{transform:translate(0)} 89%{transform:translate(-3px,1px)} 91%{transform:translate(3px,-1px)} 93%{transform:translate(-2px,2px)} 95%{transform:translate(2px,-2px)} 97%{transform:translate(-1px,1px)} }
+  @keyframes glitchT { 0%,88%,100%{transform:translate(0);opacity:0} 89%{transform:translate(4px,-2px);opacity:.9} 91%{transform:translate(-4px,1px);opacity:.9} 93%{transform:translate(2px,1px);opacity:.9} 95%{transform:translate(-2px,-1px);opacity:.9} 97%{transform:translate(1px,2px);opacity:.9} }
+  @keyframes glitchB { 0%,88%,100%{transform:translate(0);opacity:0} 89%{transform:translate(-4px,2px);opacity:.9} 91%{transform:translate(4px,-1px);opacity:.9} 93%{transform:translate(-2px,-1px);opacity:.9} 95%{transform:translate(2px,1px);opacity:.9} 97%{transform:translate(-1px,-2px);opacity:.9} }
   #enterBtn {
     margin-top:10px; padding:14px 52px;
     font-family:'Fredoka One',cursive; font-size:clamp(1rem,2.8vw,1.4rem);
@@ -310,7 +317,12 @@
   <div id="splashContent">
     <div id="splashWelcome">Welcome To:</div>
     <div id="splashTitle">Sixty-Seven-Coloring</div>
-    <div id="splashCredit">Created by <span id="glitchName" data-text="HattyHats">HattyHats</span></div>
+    <div id="splashCredit">
+      Created by<br>
+      <span id="glitchHatty" class="glitch-name" data-text="HattyHats">HattyHats</span>
+      &amp;
+      <span id="glitchLittle" class="glitch-name" data-text="LittleHats">LittleHats</span>
+    </div>
     <button id="enterBtn" onclick="enterApp()">▶ Enter</button>
   </div>
 </div>
