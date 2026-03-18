@@ -35,24 +35,52 @@
   .o4{width:200px;height:200px;background:#6bcb77;bottom:10%;left:10%;animation-delay:2s}
   .o5{width:180px;height:180px;background:#9b5de5;top:20%;right:15%;animation-delay:.8s}
   @keyframes orbPulse { 0%,100%{opacity:.18;transform:scale(1)} 50%{opacity:.35;transform:scale(1.12)} }
+  /* ── BIG background logo — fills the whole splash, sits behind text ── */
+  #splashLogoBg {
+    position:absolute;
+    inset:0;
+    z-index:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+  }
+  #splashLogoBg img, #splashLogoBg .logo-fb {
+    width:min(90vw, 90vh);
+    height:min(90vw, 90vh);
+    object-fit:contain;
+    opacity:0;
+    filter:
+      drop-shadow(0 0 60px rgba(255,107,107,.45))
+      drop-shadow(0 0 120px rgba(77,150,255,.3));
+    animation:logoBgFade 2s ease 0.6s forwards, logoBgFloat 8s ease-in-out 2.6s infinite;
+  }
+  #splashLogoBg .logo-fb {
+    font-size:min(80vw,80vh);
+    line-height:1;
+  }
+  @keyframes logoBgFade {
+    from { opacity:0; transform:scale(.88); }
+    to   { opacity:.22; transform:scale(1); }
+  }
+  @keyframes logoBgFloat {
+    0%,100% { transform:scale(1)    translateY(0);    opacity:.22; }
+    50%      { transform:scale(1.04) translateY(-12px); opacity:.28; }
+  }
+
   #splashContent {
     position:relative; z-index:2;
     display:flex; flex-direction:column; align-items:center; gap:14px;
     padding:20px; text-align:center;
   }
-  #splashLogo {
-    width:clamp(100px,22vw,180px); height:clamp(100px,22vw,180px);
-    object-fit:contain; opacity:0;
-    filter:drop-shadow(0 0 30px rgba(255,107,107,.6));
-    animation:fadeScale 1s ease .8s forwards;
-  }
+  /* Small logo removed from content flow — now only the bg version exists */
   #splashLogoFb { display:none; font-size:clamp(80px,18vw,140px); opacity:0; animation:fadeScale 1s ease .8s forwards; }
   @keyframes fadeScale { from{opacity:0;transform:scale(.7)} to{opacity:1;transform:scale(1)} }
   #splashWelcome {
     font-family:'Fredoka One',cursive; font-size:clamp(1.1rem,3.5vw,1.8rem);
-    color:rgba(255,255,255,.85); letter-spacing:2px; opacity:0;
+    color:rgba(255,255,255,.9); letter-spacing:2px; opacity:0;
     animation:fadeUp .8s ease 1.6s forwards;
-    text-shadow:0 2px 12px rgba(0,0,0,.4);
+    text-shadow:0 2px 20px rgba(0,0,0,.8), 0 0 40px rgba(0,0,0,.6);
   }
   #splashTitle {
     font-family:'Fredoka One',cursive; font-size:clamp(2.2rem,8vw,5.5rem);
@@ -60,7 +88,9 @@
     background-size:300% 100%;
     -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
     opacity:0; animation:fadeUp .9s ease 2.4s forwards, titleColors 3s linear 2.4s infinite;
-    line-height:1.1; filter:drop-shadow(0 0 20px rgba(255,107,107,.4)); white-space:nowrap;
+    line-height:1.1;
+    filter:drop-shadow(0 0 25px rgba(255,107,107,.6)) drop-shadow(0 3px 8px rgba(0,0,0,.9));
+    white-space:nowrap;
   }
   @keyframes titleColors { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
   @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
@@ -264,10 +294,14 @@
   <div id="splashBg"></div>
   <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
   <div class="orb o4"></div><div class="orb o5"></div>
+  <!-- Big background logo — full screen, behind text -->
+  <div id="splashLogoBg">
+    <img src="sixty-seven-coloring.png" alt=""
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+    <div class="logo-fb" style="display:none">🎨</div>
+  </div>
+
   <div id="splashContent">
-    <img id="splashLogo" src="sixty-seven-coloring.png" alt="Logo"
-         onerror="this.style.display='none';document.getElementById('splashLogoFb').style.display='block'"/>
-    <div id="splashLogoFb">🎨</div>
     <div id="splashWelcome">Welcome To:</div>
     <div id="splashTitle">Sixty-Seven-Coloring</div>
     <div id="splashCredit">Created by <span id="glitchName" data-text="HattyHats">HattyHats</span></div>
