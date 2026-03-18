@@ -142,37 +142,46 @@
   }
   #app.visible { opacity:1; pointer-events:all; }
 
+  /* ── HEADER ── */
   header {
     height:var(--hdr); min-height:var(--hdr); flex-shrink:0;
     background:linear-gradient(135deg,#ff6b6b,#ffd93d 50%,#6bcb77);
     display:flex; align-items:center; gap:10px; padding:0 12px;
     box-shadow:0 3px 14px rgba(0,0,0,.18); z-index:20; overflow:hidden;
   }
-  .logo {
-    font-family:'Fredoka One',cursive; font-size:1.45rem; color:#fff;
-    text-shadow:2px 2px 0 rgba(0,0,0,.13); white-space:nowrap; flex-shrink:0;
+  .logo { font-family:'Fredoka One',cursive; font-size:1.45rem; color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,.13); white-space:nowrap; flex-shrink:0; }
+  .cat-tabs { display:flex; gap:6px; }
+  .cat-tab {
+    flex-shrink:0; background:rgba(255,255,255,.28); border:2.5px solid rgba(255,255,255,.6); border-radius:40px;
+    padding:6px 16px; font-family:'Fredoka One',cursive; font-size:.9rem; color:#fff; cursor:pointer; white-space:nowrap;
+    transition:background .15s,color .15s,transform .15s; -webkit-tap-highlight-color:transparent;
   }
-  .page-pills {
-    display:flex; gap:7px; overflow-x:auto; flex:1; min-width:0;
-    padding:4px 0; scrollbar-width:none; -webkit-overflow-scrolling:touch;
+  .cat-tab:hover,.cat-tab.active { background:#fff; color:#ff6b6b; border-color:#fff; transform:scale(1.05); }
+
+  /* ── PAGE BAR ── */
+  .page-bar {
+    height:52px; min-height:52px; flex-shrink:0;
+    background:rgba(255,255,255,.92); border-bottom:2px solid var(--border);
+    display:flex; align-items:center; gap:8px; padding:0 12px;
+    overflow-x:auto; overflow-y:hidden; scrollbar-width:none; -webkit-overflow-scrolling:touch;
+    box-shadow:0 2px 8px rgba(0,0,0,.06); z-index:15;
   }
-  .page-pills::-webkit-scrollbar { display:none; }
-  .pill {
-    flex-shrink:0; background:rgba(255,255,255,.28);
-    border:2.5px solid rgba(255,255,255,.6); border-radius:40px;
-    padding:5px 13px; font-family:'Fredoka One',cursive; font-size:.82rem;
-    color:#fff; cursor:pointer; white-space:nowrap;
-    transition:background .15s,color .15s,transform .15s;
-    -webkit-tap-highlight-color:transparent;
+  .page-bar::-webkit-scrollbar { display:none; }
+  .page-pill {
+    flex-shrink:0; background:#f5f5f5; border:2px solid var(--border); border-radius:30px;
+    padding:5px 14px; font-family:'Fredoka One',cursive; font-size:.82rem; color:#555;
+    cursor:pointer; white-space:nowrap;
+    transition:background .13s,color .13s,border-color .13s,transform .13s; -webkit-tap-highlight-color:transparent;
   }
-  .pill:hover,.pill.active { background:#fff; color:#ff6b6b; border-color:#fff; transform:scale(1.06); }
-  .pill-upload { border-style:dashed; }
-  .pill-upload:hover { color:#4d96ff; }
+  .page-pill:hover,.page-pill.active { background:#ff6b6b; color:#fff; border-color:#ff6b6b; transform:scale(1.06); }
+  .page-pill-upload { border-style:dashed; background:#eef; color:#4d96ff; border-color:#4d96ff; }
+  .page-pill-upload:hover { background:#4d96ff; color:#fff; }
   #fileInput { display:none; }
 
+  /* ── APP BODY ── */
   .app-body { flex:1; display:flex; min-height:0; overflow:hidden; }
 
-  /* ── TOOLBAR ── */
+  /* ── SIDEBAR (desktop) ── */
   .toolbar {
     width:var(--tbw); flex-shrink:0; background:var(--panel);
     border-right:3px solid var(--border); box-shadow:3px 0 12px rgba(255,140,0,.10);
@@ -182,10 +191,7 @@
   }
   .toolbar::-webkit-scrollbar { width:4px; }
   .toolbar::-webkit-scrollbar-thumb { background:#ffd6a5; border-radius:4px; }
-  .tb-label {
-    font-family:'Fredoka One',cursive; font-size:.59rem; color:#bbb;
-    letter-spacing:1px; text-transform:uppercase; text-align:center; margin:6px 0 3px;
-  }
+  .tb-label { font-family:'Fredoka One',cursive; font-size:.59rem; color:#bbb; letter-spacing:1px; text-transform:uppercase; text-align:center; margin:6px 0 3px; }
   .tb-div { width:62%; height:2px; background:var(--border); border-radius:2px; margin:5px 0; }
   .tb-btn {
     width:var(--btn); height:var(--btn); flex-shrink:0;
@@ -201,89 +207,89 @@
   .ad { border-color:#6bcb77!important; background:#e8f7ea!important; }
   .ae { border-color:#ff6b6b!important; background:#ffe8e8!important; }
   .brush-wrap { display:flex; flex-direction:column; align-items:center; gap:3px; margin-bottom:4px; width:100%; }
-  #brushSize {
-    -webkit-appearance:none; appearance:none; width:64px; height:7px;
-    border-radius:4px; background:linear-gradient(to right,#4d96ff,#ff6b6b); outline:none; cursor:pointer;
-  }
-  #brushSize::-webkit-slider-thumb {
-    -webkit-appearance:none; width:20px; height:20px; border-radius:50%;
-    background:#fff; border:3px solid #4d96ff; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,.18);
-  }
+  #brushSize { -webkit-appearance:none; appearance:none; width:64px; height:7px; border-radius:4px; background:linear-gradient(to right,#4d96ff,#ff6b6b); outline:none; cursor:pointer; }
+  #brushSize::-webkit-slider-thumb { -webkit-appearance:none; width:20px; height:20px; border-radius:50%; background:#fff; border:3px solid #4d96ff; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,.18); }
   #brushLbl { font-family:'Fredoka One',cursive; font-size:.56rem; color:#aaa; }
   .color-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; width:100%; padding:2px 6px; margin-bottom:4px; }
   .swatch {
     width:34px; height:34px; border-radius:50%; border:3.5px solid #fff;
     cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.15);
     transition:transform .14s,border-color .14s,box-shadow .14s;
-    justify-self:center; -webkit-tap-highlight-color:transparent;
+    justify-self:center; -webkit-tap-highlight-color:transparent; flex-shrink:0;
   }
   .swatch:hover { transform:scale(1.14); }
   .swatch.on { border-color:#111; transform:scale(1.18); box-shadow:0 0 0 3px rgba(0,0,0,.22),0 3px 10px rgba(0,0,0,.18); }
   .custom-wrap { display:flex; flex-direction:column; align-items:center; gap:2px; margin-top:2px; }
-  #customColor {
-    width:34px; height:34px; border-radius:50%; border:3.5px solid #fff;
-    padding:0; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.15);
-    appearance:none; -webkit-appearance:none;
-    background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red); overflow:hidden;
-  }
+  #customColor { width:34px; height:34px; border-radius:50%; border:3.5px solid #fff; padding:0; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.15); appearance:none; -webkit-appearance:none; background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red); overflow:hidden; }
 
   /* ── CANVAS AREA ── */
   .canvas-area {
     flex:1; min-width:0; min-height:0;
     display:flex; align-items:center; justify-content:center;
-    background:
-      radial-gradient(circle at 20% 40%,rgba(255,107,107,.07) 0%,transparent 55%),
-      radial-gradient(circle at 78% 70%,rgba(77,150,255,.07) 0%,transparent 55%),
-      #fff4e6;
+    background: radial-gradient(circle at 20% 40%,rgba(255,107,107,.07) 0%,transparent 55%),
+                radial-gradient(circle at 78% 70%,rgba(77,150,255,.07) 0%,transparent 55%), #fff4e6;
     overflow:hidden; position:relative;
   }
-  /* Single canvas — everything drawn onto it */
-  #mainCanvas {
-    border-radius:var(--radius);
-    box-shadow:0 6px 36px rgba(0,0,0,.13),0 2px 8px rgba(0,0,0,.08);
-    cursor:crosshair;
-    display:block;
-    touch-action:none;
+  .zoom-wrap { transform-origin:center center; transition:transform .18s ease; touch-action:none; user-select:none; }
+  #mainCanvas { border-radius:var(--radius); box-shadow:0 6px 36px rgba(0,0,0,.13),0 2px 8px rgba(0,0,0,.08); cursor:crosshair; display:block; touch-action:none; }
+  .zoom-btns { position:absolute; bottom:14px; right:14px; display:flex; flex-direction:column; gap:6px; z-index:12; }
+  .zoom-fab {
+    width:40px; height:40px; border-radius:50%;
+    background:rgba(255,255,255,.92); border:2px solid var(--border);
+    font-size:1.25rem; font-family:'Fredoka One',cursive; cursor:pointer;
+    box-shadow:0 3px 10px rgba(0,0,0,.15); display:flex; align-items:center; justify-content:center;
+    transition:transform .13s,background .13s; -webkit-tap-highlight-color:transparent;
   }
-  #loadOvl {
-    position:absolute; inset:0; z-index:10;
-    background:rgba(255,255,255,.9);
-    display:flex; align-items:center; justify-content:center;
-    font-family:'Fredoka One',cursive; font-size:1.4rem; color:#4d96ff;
-    border-radius:var(--radius); transition:opacity .25s;
-  }
+  .zoom-fab:hover { transform:scale(1.13); background:#fff; }
+  #loadOvl { position:absolute; inset:0; z-index:10; background:rgba(255,255,255,.9); display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:1.4rem; color:#4d96ff; border-radius:var(--radius); transition:opacity .25s; }
   #loadOvl.gone { opacity:0; pointer-events:none; }
 
-  /* ── TOAST ── */
-  #toast {
-    position:fixed; bottom:26px; left:50%;
-    transform:translateX(-50%) translateY(80px);
-    background:#3d2b1f; color:#fff;
-    font-family:'Fredoka One',cursive; font-size:1rem;
-    padding:10px 26px; border-radius:40px;
-    box-shadow:0 6px 20px rgba(0,0,0,.2);
-    pointer-events:none; z-index:300;
-    transition:transform .3s cubic-bezier(.34,1.56,.64,1); white-space:nowrap;
+  /* ── MOBILE BOTTOM BAR ── */
+  .mob-bar { display:none; flex-direction:column; background:#fff; border-top:3px solid var(--border); box-shadow:0 -4px 20px rgba(0,0,0,.12); z-index:50; flex-shrink:0; }
+  .mob-tools { display:flex; align-items:center; justify-content:space-around; padding:6px 4px; gap:4px; overflow-x:auto; scrollbar-width:none; }
+  .mob-tools::-webkit-scrollbar { display:none; }
+  .mob-btn {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    min-width:52px; height:56px; border-radius:14px; background:#f5f5f5;
+    border:3px solid transparent; font-size:1.5rem; gap:1px; cursor:pointer; flex-shrink:0;
+    transition:transform .13s,background .13s,border-color .13s; -webkit-tap-highlight-color:transparent;
   }
+  .mob-btn span { font-family:'Fredoka One',cursive; font-size:.6rem; color:#888; line-height:1; }
+  .mob-btn:active { transform:scale(.91); }
+  .mob-btn.af { border-color:#4d96ff; background:#e8f2ff; }
+  .mob-btn.ad { border-color:#6bcb77; background:#e8f7ea; }
+  .mob-btn.ae { border-color:#ff6b6b; background:#ffe8e8; }
+  .mob-toggle { background:linear-gradient(135deg,#ff6b6b,#ffd93d); border:none!important; }
+  .mob-toggle span { color:#fff!important; }
+  .mob-drawer { display:none; flex-direction:column; gap:12px; padding:12px 14px 16px; background:#fafafa; border-top:2px solid var(--border); animation:drawerIn .2s ease; }
+  .mob-drawer.open { display:flex; }
+  @keyframes drawerIn { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
+  .mob-section-lbl { font-family:'Fredoka One',cursive; font-size:.7rem; color:#aaa; text-transform:uppercase; letter-spacing:1px; margin-right:8px; }
+  .mob-brush-row { display:flex; align-items:center; gap:8px; }
+  .mob-brush-dots { display:flex; align-items:center; gap:12px; }
+  .bdot { border-radius:50%; background:#444; border:3px solid #ddd; cursor:pointer; flex-shrink:0; transition:border-color .13s,transform .13s; -webkit-tap-highlight-color:transparent; }
+  .bdot.active { border-color:#4d96ff; transform:scale(1.22); }
+  .bdot:active { transform:scale(.86); }
+  .mob-colors { display:flex; flex-wrap:wrap; gap:10px; }
+  .mob-colors .swatch { width:46px; height:46px; }
+  .mob-custom-color { width:46px!important; height:46px!important; background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red)!important; border:3.5px solid #fff!important; appearance:none; -webkit-appearance:none; overflow:hidden; }
+  .mob-zoom-btn { width:50px; height:50px; border-radius:50%; background:#f0f0f0; border:2px solid var(--border); font-family:'Fredoka One',cursive; font-size:1.5rem; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:transform .12s,background .12s; }
+  .mob-zoom-btn:active { transform:scale(.9); background:#e0e0e0; }
+
+  /* ── TOAST ── */
+  #toast { position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(80px); background:#3d2b1f; color:#fff; font-family:'Fredoka One',cursive; font-size:1rem; padding:10px 26px; border-radius:40px; box-shadow:0 6px 20px rgba(0,0,0,.2); pointer-events:none; z-index:300; transition:transform .3s cubic-bezier(.34,1.56,.64,1); white-space:nowrap; }
   #toast.show { transform:translateX(-50%) translateY(0); }
 
-  /* ── MOBILE ── */
-  @media (max-width:600px) {
-    :root { --hdr:52px; --tbw:100%; }
-    .app-body { flex-direction:column-reverse; }
-    .toolbar {
-      width:100%; height:auto; flex-direction:row; flex-wrap:nowrap;
-      border-right:none; border-top:3px solid var(--border);
-      padding:8px 10px; overflow-x:auto; overflow-y:hidden;
-      gap:8px; align-items:center; box-shadow:0 -3px 12px rgba(255,140,0,.10);
-    }
-    .tb-label,.tb-div { display:none; }
-    .tb-btn { margin-bottom:0; flex-shrink:0; }
-    .color-grid { display:flex; flex-direction:row; gap:8px; width:auto; padding:0; margin-bottom:0; }
-    .swatch { flex-shrink:0; }
-    .brush-wrap { flex-direction:row; gap:6px; margin-bottom:0; }
-    .custom-wrap { flex-direction:row; gap:4px; margin-top:0; }
-    #brushSize { width:52px; }
+  /* ── MOBILE BREAKPOINT ── */
+  @media (max-width:700px) {
+    :root { --hdr:54px; --tbw:0px; }
+    .toolbar { display:none; }
+    .mob-bar { display:flex; }
+    .zoom-btns { display:none; }
+    .cat-tabs { gap:4px; }
+    .cat-tab { padding:5px 10px; font-size:.78rem; }
+    .page-bar { height:46px; min-height:46px; gap:6px; padding:0 8px; }
+    .page-pill { padding:4px 10px; font-size:.75rem; }
   }
   </style>
 </head>
@@ -311,24 +317,27 @@
 
 <!-- MAIN APP -->
 <div id="app">
+
+  <!-- ── HEADER: logo + category tabs ── -->
   <header>
-    <div class="logo">Sixty-Seven 🎨</div>
-    <div class="page-pills" id="pagePills">
-      <button class="pill active" data-page="rocket">🚀 Rocket</button>
-      <button class="pill" data-page="dino">🦕 Dino</button>
-      <button class="pill" data-page="butterfly">🦋 Butterfly</button>
-      <button class="pill" data-page="fish">🐟 Fish</button>
-      <button class="pill" data-page="house">🏠 House</button>
-      <button class="pill" data-page="sun">☀️ Sun</button>
-      <button class="pill" data-page="cat">🐱 Cat</button>
-      <button class="pill" data-page="dog">🐶 Dog</button>
-      <button class="pill pill-upload" id="btnUpload">📁 Upload</button>
+    <div class="logo">67🎨</div>
+    <div class="cat-tabs" id="catTabs">
+      <button class="cat-tab active" data-cat="67">⭐ 67</button>
+      <button class="cat-tab" data-cat="normal">🖼️ Normal</button>
+      <button class="cat-tab" data-cat="upload">📁 Upload</button>
     </div>
-    <input type="file" id="fileInput" accept="image/*,.svg"/>
   </header>
 
+  <!-- ── PAGE PICKER BAR (scrollable thumbnails under header) ── -->
+  <div class="page-bar" id="pageBar">
+    <!-- filled dynamically by JS -->
+  </div>
+
+  <!-- ── APP BODY ── -->
   <div class="app-body">
-    <div class="toolbar">
+
+    <!-- DESKTOP SIDEBAR (hidden on mobile) -->
+    <div class="toolbar" id="sidebar">
       <div class="tb-label">Tools</div>
       <button class="tb-btn af" id="btnFill">🪣<span class="lbl">Fill</span></button>
       <button class="tb-btn"    id="btnDraw">✏️<span class="lbl">Draw</span></button>
@@ -336,6 +345,11 @@
       <button class="tb-btn"    id="btnUndo">↩️<span class="lbl">Undo</span></button>
       <button class="tb-btn"    id="btnClear">🗑️<span class="lbl">Clear</span></button>
       <button class="tb-btn"    id="btnSave">💾<span class="lbl">Save</span></button>
+      <div class="tb-div"></div>
+      <div class="tb-label">Zoom</div>
+      <button class="tb-btn" id="btnZoomIn">🔍<span class="lbl">+</span></button>
+      <button class="tb-btn" id="btnZoomOut">🔎<span class="lbl">−</span></button>
+      <button class="tb-btn" id="btnZoomReset">⌖<span class="lbl">Fit</span></button>
       <div class="tb-div"></div>
       <div class="tb-label">Brush</div>
       <div class="brush-wrap">
@@ -364,734 +378,618 @@
       </div>
     </div>
 
+    <!-- CANVAS AREA -->
     <div class="canvas-area" id="canvasArea">
-      <canvas id="mainCanvas"></canvas>
+      <!-- Zoom/pan wrapper -->
+      <div class="zoom-wrap" id="zoomWrap">
+        <canvas id="mainCanvas"></canvas>
+      </div>
       <div id="loadOvl">Loading… 🎨</div>
+
+      <!-- Zoom buttons floating over canvas (desktop) -->
+      <div class="zoom-btns" id="zoomBtns">
+        <button class="zoom-fab" id="deskZoomIn"  title="Zoom in">+</button>
+        <button class="zoom-fab" id="deskZoomOut" title="Zoom out">−</button>
+        <button class="zoom-fab" id="deskZoomFit" title="Fit">⌖</button>
+      </div>
     </div>
   </div>
+
+  <!-- ── MOBILE BOTTOM DRAWER ── -->
+  <div class="mob-bar" id="mobBar">
+
+    <!-- Tool strip (always visible) -->
+    <div class="mob-tools">
+      <button class="mob-btn af" id="mFill"  >🪣<span>Fill</span></button>
+      <button class="mob-btn"    id="mDraw"  >✏️<span>Draw</span></button>
+      <button class="mob-btn"    id="mEraser">🧽<span>Erase</span></button>
+      <button class="mob-btn"    id="mUndo"  >↩️<span>Undo</span></button>
+      <button class="mob-btn"    id="mClear" >🗑️<span>Clear</span></button>
+      <button class="mob-btn"    id="mSave"  >💾<span>Save</span></button>
+      <!-- Toggle drawer open/close -->
+      <button class="mob-btn mob-toggle" id="mobToggle">🎨<span>More</span></button>
+    </div>
+
+    <!-- Expandable drawer: brush + colors -->
+    <div class="mob-drawer" id="mobDrawer">
+      <!-- Brush size with big visible dots -->
+      <div class="mob-brush-row">
+        <span class="mob-section-lbl">Brush</span>
+        <div class="mob-brush-dots" id="mobBrushDots">
+          <button class="bdot" data-px="6"  style="width:14px;height:14px"></button>
+          <button class="bdot" data-px="12" style="width:20px;height:20px"></button>
+          <button class="bdot active" data-px="18" style="width:28px;height:28px"></button>
+          <button class="bdot" data-px="28" style="width:38px;height:38px"></button>
+          <button class="bdot" data-px="40" style="width:50px;height:50px"></button>
+        </div>
+      </div>
+      <!-- Color palette — big round buttons, 2 rows -->
+      <div class="mob-section-lbl">Colors</div>
+      <div class="mob-colors" id="mobColors">
+        <div class="swatch on"  style="background:#e63946" data-c="#e63946"></div>
+        <div class="swatch"     style="background:#f4701b" data-c="#f4701b"></div>
+        <div class="swatch"     style="background:#ffd93d" data-c="#ffd93d"></div>
+        <div class="swatch"     style="background:#57cc04" data-c="#57cc04"></div>
+        <div class="swatch"     style="background:#06d6a0" data-c="#06d6a0"></div>
+        <div class="swatch"     style="background:#4d96ff" data-c="#4d96ff"></div>
+        <div class="swatch"     style="background:#9b5de5" data-c="#9b5de5"></div>
+        <div class="swatch"     style="background:#f15bb5" data-c="#f15bb5"></div>
+        <div class="swatch"     style="background:#a0522d" data-c="#a0522d"></div>
+        <div class="swatch"     style="background:#888888" data-c="#888888"></div>
+        <div class="swatch"     style="background:#ffffff;border-color:#ccc" data-c="#ffffff"></div>
+        <div class="swatch"     style="background:#111111" data-c="#111111"></div>
+        <input type="color" id="mobCustomColor" value="#e63946" title="Any color" class="swatch mob-custom-color"/>
+      </div>
+      <!-- Zoom row -->
+      <div class="mob-brush-row">
+        <span class="mob-section-lbl">Zoom</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="mob-zoom-btn" id="mZoomOut">−</button>
+          <button class="mob-zoom-btn" id="mZoomFit">Fit</button>
+          <button class="mob-zoom-btn" id="mZoomIn">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="fileInput" accept="image/*,.svg"/>
 </div>
 
 <div id="toast"></div>
 
 <script>
 "use strict";
+
 /* ================================================================
-   HOW THE FILL WORKS — single-canvas approach
+   CATEGORIES & PAGE REGISTRY
    ================================================================
-   Instead of layering canvases (which caused click-blocking and
-   CORS/taint issues with SVG drawImage), we use ONE canvas.
+   type:'svg'  — inline SVG string (drawn vector, fills work perfectly)
+   type:'png'  — external PNG file (loaded as raster image)
 
-   State is kept in two ImageData buffers:
-     • colorLayer  — the colors the user has painted
-     • outlineLayer — the SVG outline pixels (walls for flood fill)
+   For PNG files the image is drawn onto the canvas as-is.
+   The outline detection still works: dark pixels = walls for fill tool.
+================================================================ */
+const CATS = {
+  '67': {
+    label: '⭐ 67',
+    pages: [
+      { key:'r_rocket',    label:'🚀 Rocket',    type:'svg' },
+      { key:'r_dino',      label:'🦕 Dino',      type:'svg' },
+      { key:'r_butterfly', label:'🦋 Butterfly', type:'svg' },
+      { key:'r_fish',      label:'🐟 Fish',      type:'svg' },
+      { key:'r_house',     label:'🏠 House',     type:'svg' },
+      { key:'r_sun',       label:'☀️ Sun',       type:'svg' },
+      { key:'r_cat',       label:'🐱 Cat',       type:'svg' },
+      { key:'r_dog',       label:'🐶 Dog',       type:'svg' },
+      { key:'r_67',        label:'6️⃣7️⃣ 67',     type:'png', src:'67.png' },
+    ]
+  },
+  'normal': {
+    label: '🖼️ Normal',
+    pages: [
+      { key:'n_puppy',     label:'🐶 Puppy',     type:'png', src:'puppy.png' },
+      { key:'n_cat',       label:'🐱 Cat',       type:'png', src:'cat.png' },
+      { key:'n_sun',       label:'☀️ Sun',       type:'png', src:'sun.png' },
+      { key:'n_rocket',    label:'🚀 Rocket',    type:'png', src:'rocket.png' },
+      { key:'n_house',     label:'🏠 House',     type:'png', src:'house.png' },
+      { key:'n_butterfly', label:'🦋 Butterfly', type:'png', src:'butterfly.png' },
+      { key:'n_dino',      label:'🦕 Dino',      type:'png', src:'dino.png' },
+      { key:'n_fish',      label:'🐟 Fish',      type:'png', src:'fish.png' },
+    ]
+  },
+  'upload': {
+    label: '📁 Upload',
+    pages: [] // filled dynamically
+  }
+};
 
-   Each frame we composite: white bg → colorLayer → outlineLayer.
+/* ── Inline SVG data ── */
+const SVG_DATA = {
+r_rocket:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><rect width="500" height="500" fill="white"/><circle cx="55" cy="60" r="5" fill="none" stroke="#111" stroke-width="3"/><circle cx="445" cy="90" r="6" fill="none" stroke="#111" stroke-width="3"/><circle cx="75" cy="385" r="4" fill="none" stroke="#111" stroke-width="3"/><circle cx="430" cy="350" r="5" fill="none" stroke="#111" stroke-width="3"/><circle cx="155" cy="440" r="3" fill="none" stroke="#111" stroke-width="3"/><circle cx="375" cy="435" r="4" fill="none" stroke="#111" stroke-width="3"/><path d="M250,50 C196,50 155,126 150,224 L350,224 C345,126 304,50 250,50 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><circle cx="250" cy="168" r="35" fill="white" stroke="#111" stroke-width="5"/><circle cx="250" cy="168" r="20" fill="white" stroke="#111" stroke-width="3.5"/><ellipse cx="250" cy="84" rx="27" ry="27" fill="white" stroke="#111" stroke-width="4"/><rect x="150" y="224" width="200" height="114" rx="8" fill="white" stroke="#111" stroke-width="5"/><line x1="205" y1="234" x2="205" y2="328" stroke="#111" stroke-width="3"/><line x1="295" y1="234" x2="295" y2="328" stroke="#111" stroke-width="3"/><path d="M150,244 C114,264 90,317 96,338 L150,316 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M350,244 C386,264 410,317 404,338 L350,316 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M150,338 C155,362 196,377 250,377 C304,377 345,362 350,338 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M196,377 C180,397 170,428 186,453 C208,432 230,422 250,427 C270,422 292,432 314,453 C330,428 320,397 304,377 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M222,382 C211,402 215,424 232,438 C239,425 250,418 261,418 C272,418 283,425 268,438 C285,424 289,402 278,382 Z" fill="white" stroke="#111" stroke-width="4" stroke-linejoin="round"/></svg>`,
 
-   Flood fill reads outlineLayer to find walls, writes to colorLayer,
-   then recomposites. No CORS, no z-index pointer-event issues.
-   ================================================================ */
+r_dino:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><rect width="500" height="500" fill="white"/><path d="M22,440 Q115,416 200,433 Q300,450 400,426 Q450,418 478,440 L478,490 L22,490 Z" fill="white" stroke="#111" stroke-width="4"/><circle cx="52" cy="356" r="38" fill="white" stroke="#111" stroke-width="3.5"/><line x1="52" y1="394" x2="52" y2="440" stroke="#111" stroke-width="4.5" stroke-linecap="round"/><circle cx="448" cy="364" r="30" fill="white" stroke="#111" stroke-width="3.5"/><line x1="448" y1="394" x2="448" y2="436" stroke="#111" stroke-width="4.5" stroke-linecap="round"/><ellipse cx="226" cy="314" rx="124" ry="90" fill="white" stroke="#111" stroke-width="5"/><path d="M190,232 C180,198 196,166 217,146 L290,151 C303,167 298,208 276,234" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M170,126 C170,94 197,70 234,65 C273,60 316,77 326,110 C336,143 320,174 292,184 L196,184 C170,173 160,158 170,126 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><circle cx="288" cy="106" r="20" fill="white" stroke="#111" stroke-width="4"/><circle cx="293" cy="103" r="9" fill="#111"/><circle cx="313" cy="136" r="7" fill="#111"/><path d="M292,158 C310,176 337,176 351,165" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"/><path d="M306,168 L312,182 L320,168 M321,167 L327,181 L335,167" fill="white" stroke="#111" stroke-width="3" stroke-linejoin="round"/><path d="M273,234 L283,186 L293,234 M293,234 L307,182 L317,234 M317,234 L328,186 L339,237" fill="white" stroke="#111" stroke-width="4" stroke-linejoin="round"/><path d="M348,314 C395,293 436,261 456,218 C461,208 450,203 445,214 C425,245 394,272 354,302" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/><path d="M176,374 L161,425 L150,445 M141,445 L166,445 M166,445 L177,445" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M216,379 L211,430 L206,449 M196,449 L220,449" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M292,389 L281,430 L271,452 M261,452 L286,452" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M330,379 L340,430 L348,452 M338,452 L358,452" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
 
-/* ── SVG pages ── */
-const PAGES = {
+r_butterfly:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><rect width="500" height="500" fill="white"/><path d="M250,254 C227,221 162,148 83,117 C33,97 24,140 45,178 C70,223 140,249 200,252" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M250,254 C273,221 338,148 417,117 C467,97 476,140 455,178 C430,223 360,249 300,252" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M250,270 C224,280 151,294 83,337 C42,361 48,396 85,406 C136,421 199,374 233,323 C241,311 247,290 250,270" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M250,270 C276,280 349,294 417,337 C458,361 452,396 415,406 C364,421 301,374 267,323 C259,311 253,290 250,270" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><ellipse cx="150" cy="188" rx="46" ry="31" transform="rotate(-15,150,188)" fill="white" stroke="#111" stroke-width="3.5"/><ellipse cx="134" cy="177" rx="20" ry="13" transform="rotate(-15,134,177)" fill="white" stroke="#111" stroke-width="2.5"/><ellipse cx="350" cy="188" rx="46" ry="31" transform="rotate(15,350,188)" fill="white" stroke="#111" stroke-width="3.5"/><ellipse cx="366" cy="177" rx="20" ry="13" transform="rotate(15,366,177)" fill="white" stroke="#111" stroke-width="2.5"/><ellipse cx="150" cy="350" rx="38" ry="24" transform="rotate(10,150,350)" fill="white" stroke="#111" stroke-width="3"/><circle cx="145" cy="353" r="11" fill="white" stroke="#111" stroke-width="2.5"/><ellipse cx="350" cy="350" rx="38" ry="24" transform="rotate(-10,350,350)" fill="white" stroke="#111" stroke-width="3"/><circle cx="355" cy="353" r="11" fill="white" stroke="#111" stroke-width="2.5"/><ellipse cx="250" cy="262" rx="15" ry="74" fill="white" stroke="#111" stroke-width="5"/><circle cx="250" cy="180" r="24" fill="white" stroke="#111" stroke-width="4"/><circle cx="242" cy="174" r="6" fill="#111"/><circle cx="258" cy="174" r="6" fill="#111"/><path d="M244,158 Q218,120 197,99" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><circle cx="197" cy="99" r="8" fill="white" stroke="#111" stroke-width="3"/><path d="M256,158 Q282,120 303,99" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><circle cx="303" cy="99" r="8" fill="white" stroke="#111" stroke-width="3"/></svg>`,
 
-rocket:{label:"Rocket",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
-<rect width="500" height="500" fill="white"/>
-<circle cx="55" cy="60" r="5" fill="none" stroke="#111" stroke-width="3"/>
-<circle cx="445" cy="90" r="6" fill="none" stroke="#111" stroke-width="3"/>
-<circle cx="75" cy="385" r="4" fill="none" stroke="#111" stroke-width="3"/>
-<circle cx="430" cy="350" r="5" fill="none" stroke="#111" stroke-width="3"/>
-<circle cx="155" cy="440" r="3" fill="none" stroke="#111" stroke-width="3"/>
-<circle cx="375" cy="435" r="4" fill="none" stroke="#111" stroke-width="3"/>
-<path d="M250,50 C196,50 155,126 150,224 L350,224 C345,126 304,50 250,50 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<circle cx="250" cy="168" r="35" fill="white" stroke="#111" stroke-width="5"/>
-<circle cx="250" cy="168" r="20" fill="white" stroke="#111" stroke-width="3.5"/>
-<ellipse cx="250" cy="84" rx="27" ry="27" fill="white" stroke="#111" stroke-width="4"/>
-<rect x="150" y="224" width="200" height="114" rx="8" fill="white" stroke="#111" stroke-width="5"/>
-<line x1="205" y1="234" x2="205" y2="328" stroke="#111" stroke-width="3"/>
-<line x1="295" y1="234" x2="295" y2="328" stroke="#111" stroke-width="3"/>
-<path d="M150,244 C114,264 90,317 96,338 L150,316 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<path d="M350,244 C386,264 410,317 404,338 L350,316 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<path d="M150,338 C155,362 196,377 250,377 C304,377 345,362 350,338 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<path d="M196,377 C180,397 170,428 186,453 C208,432 230,422 250,427 C270,422 292,432 314,453 C330,428 320,397 304,377 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<path d="M222,382 C211,402 215,424 232,438 C239,425 250,418 261,418 C272,418 283,425 268,438 C285,424 289,402 278,382 Z" fill="white" stroke="#111" stroke-width="4" stroke-linejoin="round"/>
-</svg>`},
+r_fish:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><rect width="500" height="500" fill="white"/><path d="M16,384 Q76,362 136,384 Q196,406 256,384 Q316,362 376,384 Q436,406 484,384" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><path d="M16,414 Q76,392 136,414 Q196,436 256,414 Q316,392 376,414 Q436,436 484,414" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><circle cx="336" cy="154" r="12" fill="white" stroke="#111" stroke-width="3"/><circle cx="352" cy="118" r="8" fill="white" stroke="#111" stroke-width="3"/><circle cx="342" cy="84" r="5" fill="white" stroke="#111" stroke-width="3"/><circle cx="76" cy="204" r="9" fill="white" stroke="#111" stroke-width="3"/><circle cx="66" cy="170" r="6" fill="white" stroke="#111" stroke-width="3"/><ellipse cx="236" cy="264" rx="159" ry="89" fill="white" stroke="#111" stroke-width="6"/><path d="M387,264 C423,211 465,185 479,197 C463,228 461,264 479,314 C465,328 423,302 387,264 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><circle cx="141" cy="248" r="33" fill="white" stroke="#111" stroke-width="5"/><circle cx="136" cy="243" r="16" fill="white" stroke="#111" stroke-width="4"/><circle cx="133" cy="240" r="7" fill="#111"/><path d="M86,272 Q98,290 114,284" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"/><path d="M171,180 C192,129 238,109 280,121 C296,146 296,172 285,182" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M181,239 Q196,229 211,239 Q226,249 241,239 Q256,229 271,239 Q286,249 301,239 Q316,229 331,239" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/><path d="M171,259 Q189,249 206,259 Q224,269 241,259 Q259,249 276,259 Q294,269 311,259 Q329,249 346,259" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/><path d="M181,282 Q196,272 211,282 Q226,292 244,282 Q261,272 279,282 Q296,292 314,282 Q331,272 348,282" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/></svg>`,
 
-dino:{label:"Dinosaur",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
-<rect width="500" height="500" fill="white"/>
-<path d="M22,440 Q115,416 200,433 Q300,450 400,426 Q450,418 478,440 L478,490 L22,490 Z" fill="white" stroke="#111" stroke-width="4"/>
-<circle cx="52" cy="356" r="38" fill="white" stroke="#111" stroke-width="3.5"/>
-<line x1="52" y1="394" x2="52" y2="440" stroke="#111" stroke-width="4.5" stroke-linecap="round"/>
-<circle cx="448" cy="364" r="30" fill="white" stroke="#111" stroke-width="3.5"/>
-<line x1="448" y1="394" x2="448" y2="436" stroke="#111" stroke-width="4.5" stroke-linecap="round"/>
-<ellipse cx="226" cy="314" rx="124" ry="90" fill="white" stroke="#111" stroke-width="5"/>
-<path d="M190,232 C180,198 196,166 217,146 L290,151 C303,167 298,208 276,234" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<path d="M170,126 C170,94 197,70 234,65 C273,60 316,77 326,110 C336,143 320,174 292,184 L196,184 C170,173 160,158 170,126 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<circle cx="288" cy="106" r="20" fill="white" stroke="#111" stroke-width="4"/>
-<circle cx="293" cy="103" r="9" fill="#111"/>
-<circle cx="313" cy="136" r="7" fill="#111"/>
-<path d="M292,158 C310,176 337,176 351,165" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"/>
-<path d="M306,168 L312,182 L320,168 M321,167 L327,181 L335,167" fill="white" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
-<path d="M273,234 L283,186 L293,234 M293,234 L307,182 L317,234 M317,234 L328,186 L339,237" fill="white" stroke="#111" stroke-width="4" stroke-linejoin="round"/>
-<path d="M348,314 C395,293 436,261 456,218 C461,208 450,203 445,214 C425,245 394,272 354,302" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-<path d="M176,374 L161,425 L150,445 M141,445 L166,445 M166,445 L177,445" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M216,379 L211,430 L206,449 M196,449 L220,449" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M292,389 L281,430 L271,452 M261,452 L286,452" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M330,379 L340,430 L348,452 M338,452 L358,452" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M160,293 Q197,308 230,297 Q266,286 310,303" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-<path d="M156,323 Q197,335 230,324 Q266,313 312,331" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-</svg>`},
+r_house:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><rect width="500" height="500" fill="white"/><circle cx="422" cy="76" r="44" fill="white" stroke="#111" stroke-width="4"/><line x1="422" y1="18" x2="422" y2="2" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><line x1="422" y1="150" x2="422" y2="166" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><line x1="362" y1="76" x2="346" y2="76" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><line x1="482" y1="76" x2="498" y2="76" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><line x1="380" y1="34" x2="369" y2="23" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><line x1="464" y1="118" x2="475" y2="129" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><line x1="464" y1="34" x2="475" y2="23" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><line x1="380" y1="118" x2="369" y2="129" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><rect x="18" y="424" width="464" height="62" rx="8" fill="white" stroke="#111" stroke-width="4"/><rect x="96" y="274" width="308" height="154" rx="4" fill="white" stroke="#111" stroke-width="5"/><path d="M66,282 L250,116 L434,282 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><rect x="308" y="132" width="44" height="84" fill="white" stroke="#111" stroke-width="4"/><path d="M206,428 L206,320 Q206,298 250,298 Q294,298 294,320 L294,428 Z" fill="white" stroke="#111" stroke-width="4.5"/><circle cx="282" cy="370" r="6" fill="#111"/><rect x="116" y="302" width="74" height="68" rx="4" fill="white" stroke="#111" stroke-width="4"/><line x1="153" y1="302" x2="153" y2="370" stroke="#111" stroke-width="2.5"/><line x1="116" y1="336" x2="190" y2="336" stroke="#111" stroke-width="2.5"/><rect x="310" y="302" width="74" height="68" rx="4" fill="white" stroke="#111" stroke-width="4"/><line x1="347" y1="302" x2="347" y2="370" stroke="#111" stroke-width="2.5"/><line x1="310" y1="336" x2="384" y2="336" stroke="#111" stroke-width="2.5"/><circle cx="55" cy="344" r="48" fill="white" stroke="#111" stroke-width="4"/><circle cx="40" cy="317" r="30" fill="white" stroke="#111" stroke-width="3.5"/><circle cx="74" cy="320" r="30" fill="white" stroke="#111" stroke-width="3.5"/><line x1="55" y1="392" x2="55" y2="428" stroke="#111" stroke-width="5" stroke-linecap="round"/></svg>`,
 
-butterfly:{label:"Butterfly",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
-<rect width="500" height="500" fill="white"/>
-<circle cx="50" cy="424" r="17" fill="white" stroke="#111" stroke-width="3"/>
-<circle cx="50" cy="424" r="6" fill="#ffd93d" stroke="#111" stroke-width="2"/>
-<line x1="50" y1="441" x2="50" y2="472" stroke="#111" stroke-width="3" stroke-linecap="round"/>
-<circle cx="450" cy="414" r="14" fill="white" stroke="#111" stroke-width="3"/>
-<circle cx="450" cy="414" r="5" fill="#ffd93d" stroke="#111" stroke-width="2"/>
-<line x1="450" y1="428" x2="450" y2="460" stroke="#111" stroke-width="3" stroke-linecap="round"/>
-<path d="M250,254 C227,221 162,148 83,117 C33,97 24,140 45,178 C70,223 140,249 200,252" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<path d="M250,254 C273,221 338,148 417,117 C467,97 476,140 455,178 C430,223 360,249 300,252" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<path d="M250,270 C224,280 151,294 83,337 C42,361 48,396 85,406 C136,421 199,374 233,323 C241,311 247,290 250,270" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<path d="M250,270 C276,280 349,294 417,337 C458,361 452,396 415,406 C364,421 301,374 267,323 C259,311 253,290 250,270" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<ellipse cx="150" cy="188" rx="46" ry="31" transform="rotate(-15,150,188)" fill="white" stroke="#111" stroke-width="3.5"/>
-<ellipse cx="134" cy="177" rx="20" ry="13" transform="rotate(-15,134,177)" fill="white" stroke="#111" stroke-width="2.5"/>
-<ellipse cx="350" cy="188" rx="46" ry="31" transform="rotate(15,350,188)" fill="white" stroke="#111" stroke-width="3.5"/>
-<ellipse cx="366" cy="177" rx="20" ry="13" transform="rotate(15,366,177)" fill="white" stroke="#111" stroke-width="2.5"/>
-<ellipse cx="150" cy="350" rx="38" ry="24" transform="rotate(10,150,350)" fill="white" stroke="#111" stroke-width="3"/>
-<circle cx="145" cy="353" r="11" fill="white" stroke="#111" stroke-width="2.5"/>
-<ellipse cx="350" cy="350" rx="38" ry="24" transform="rotate(-10,350,350)" fill="white" stroke="#111" stroke-width="3"/>
-<circle cx="355" cy="353" r="11" fill="white" stroke="#111" stroke-width="2.5"/>
-<ellipse cx="250" cy="262" rx="15" ry="74" fill="white" stroke="#111" stroke-width="5"/>
-<circle cx="250" cy="180" r="24" fill="white" stroke="#111" stroke-width="4"/>
-<circle cx="242" cy="174" r="6" fill="#111"/>
-<circle cx="258" cy="174" r="6" fill="#111"/>
-<path d="M244,158 Q218,120 197,99" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<circle cx="197" cy="99" r="8" fill="white" stroke="#111" stroke-width="3"/>
-<path d="M256,158 Q282,120 303,99" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<circle cx="303" cy="99" r="8" fill="white" stroke="#111" stroke-width="3"/>
-<path d="M243,192 Q250,200 257,192" fill="none" stroke="#111" stroke-width="3" stroke-linecap="round"/>
-</svg>`},
+r_sun:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><rect width="500" height="500" fill="white"/><path d="M56,374 Q250,56 444,374" fill="none" stroke="#111" stroke-width="15" stroke-linecap="round"/><path d="M81,374 Q250,96 419,374" fill="none" stroke="#111" stroke-width="15" stroke-linecap="round"/><path d="M106,374 Q250,136 394,374" fill="none" stroke="#111" stroke-width="15" stroke-linecap="round"/><path d="M131,374 Q250,176 369,374" fill="none" stroke="#111" stroke-width="15" stroke-linecap="round"/><path d="M156,374 Q250,212 344,374" fill="none" stroke="#111" stroke-width="15" stroke-linecap="round"/><path d="M181,374 Q250,244 319,374" fill="none" stroke="#111" stroke-width="15" stroke-linecap="round"/><path d="M16,454 Q250,354 484,454 L484,504 L16,504 Z" fill="white" stroke="#111" stroke-width="4"/><circle cx="250" cy="298" r="69" fill="white" stroke="#111" stroke-width="5"/><line x1="250" y1="217" x2="250" y2="195" stroke="#111" stroke-width="5" stroke-linecap="round"/><line x1="250" y1="379" x2="250" y2="401" stroke="#111" stroke-width="5" stroke-linecap="round"/><line x1="169" y1="298" x2="147" y2="298" stroke="#111" stroke-width="5" stroke-linecap="round"/><line x1="331" y1="298" x2="353" y2="298" stroke="#111" stroke-width="5" stroke-linecap="round"/><circle cx="228" cy="284" r="14" fill="white" stroke="#111" stroke-width="4"/><circle cx="272" cy="284" r="14" fill="white" stroke="#111" stroke-width="4"/><circle cx="232" cy="281" r="6" fill="#111"/><circle cx="276" cy="281" r="6" fill="#111"/><path d="M216,320 Q250,345 284,320" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/></svg>`,
 
-fish:{label:"Fish",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
-<rect width="500" height="500" fill="white"/>
-<path d="M16,384 Q76,362 136,384 Q196,406 256,384 Q316,362 376,384 Q436,406 484,384" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<path d="M16,414 Q76,392 136,414 Q196,436 256,414 Q316,392 376,414 Q436,436 484,414" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<circle cx="336" cy="154" r="12" fill="white" stroke="#111" stroke-width="3"/>
-<circle cx="352" cy="118" r="8" fill="white" stroke="#111" stroke-width="3"/>
-<circle cx="342" cy="84" r="5" fill="white" stroke="#111" stroke-width="3"/>
-<circle cx="76" cy="204" r="9" fill="white" stroke="#111" stroke-width="3"/>
-<circle cx="66" cy="170" r="6" fill="white" stroke="#111" stroke-width="3"/>
-<path d="M430,474 Q420,444 430,414 Q440,384 430,354 Q420,324 430,294" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"/>
-<path d="M460,474 Q475,444 460,414 Q445,384 460,354" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"/>
-<ellipse cx="236" cy="264" rx="159" ry="89" fill="white" stroke="#111" stroke-width="6"/>
-<path d="M387,264 C423,211 465,185 479,197 C463,228 461,264 479,314 C465,328 423,302 387,264 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<path d="M407,243 L458,213 M413,262 L471,262 M407,280 L458,310" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-<circle cx="141" cy="248" r="33" fill="white" stroke="#111" stroke-width="5"/>
-<circle cx="136" cy="243" r="16" fill="white" stroke="#111" stroke-width="4"/>
-<circle cx="133" cy="240" r="7" fill="#111"/>
-<path d="M86,272 Q98,290 114,284" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"/>
-<path d="M171,180 C192,129 238,109 280,121 C296,146 296,172 285,182" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<path d="M198,170 L211,134 M225,158 L238,120 M252,155 L265,120 M273,160 L286,130" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-<path d="M211,282 C211,314 236,339 261,334 C276,324 271,298 256,288" fill="white" stroke="#111" stroke-width="4" stroke-linejoin="round"/>
-<path d="M181,239 Q196,229 211,239 Q226,249 241,239 Q256,229 271,239 Q286,249 301,239 Q316,229 331,239" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-<path d="M171,259 Q189,249 206,259 Q224,269 241,259 Q259,249 276,259 Q294,269 311,259 Q329,249 346,259" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-<path d="M181,282 Q196,272 211,282 Q226,292 244,282 Q261,272 279,282 Q296,292 314,282 Q331,272 348,282" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-<path d="M201,302 Q218,292 234,302 Q251,312 268,302 Q286,292 303,302 Q320,312 336,302" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-</svg>`},
+r_cat:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><rect width="500" height="500" fill="white"/><path d="M18,452 Q250,422 482,452 L482,500 L18,500 Z" fill="white" stroke="#111" stroke-width="4"/><path d="M332,372 C383,342 434,312 452,268 C462,244 447,231 437,248 C420,278 380,308 340,340" fill="none" stroke="#111" stroke-width="7" stroke-linecap="round"/><ellipse cx="455" cy="254" rx="19" ry="14" transform="rotate(-28,455,254)" fill="white" stroke="#111" stroke-width="4"/><ellipse cx="230" cy="342" rx="132" ry="102" fill="white" stroke="#111" stroke-width="5"/><rect x="192" y="226" width="78" height="62" rx="22" fill="white" stroke="#111" stroke-width="5"/><ellipse cx="230" cy="196" rx="97" ry="87" fill="white" stroke="#111" stroke-width="5"/><path d="M146,150 L129,88 L191,130 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M314,150 L331,88 L269,130 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><ellipse cx="196" cy="190" rx="23" ry="27" fill="white" stroke="#111" stroke-width="4"/><ellipse cx="196" cy="192" rx="10" ry="21" fill="#111"/><circle cx="200" cy="184" r="5" fill="white"/><ellipse cx="264" cy="190" rx="23" ry="27" fill="white" stroke="#111" stroke-width="4"/><ellipse cx="264" cy="192" rx="10" ry="21" fill="#111"/><circle cx="268" cy="184" r="5" fill="white"/><path d="M220,220 L230,228 L240,220 Z" fill="#f15bb5" stroke="#111" stroke-width="2.5"/><line x1="168" y1="224" x2="218" y2="228" stroke="#111" stroke-width="2.5" stroke-linecap="round"/><line x1="164" y1="234" x2="216" y2="234" stroke="#111" stroke-width="2.5" stroke-linecap="round"/><line x1="292" y1="224" x2="242" y2="228" stroke="#111" stroke-width="2.5" stroke-linecap="round"/><line x1="296" y1="234" x2="244" y2="234" stroke="#111" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="174" cy="434" rx="35" ry="23" fill="white" stroke="#111" stroke-width="4"/><ellipse cx="278" cy="434" rx="35" ry="23" fill="white" stroke="#111" stroke-width="4"/><path d="M166,272 Q230,287 294,272" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/><circle cx="230" cy="280" r="8" fill="white" stroke="#111" stroke-width="3"/></svg>`,
 
-house:{label:"House",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
-<rect width="500" height="500" fill="white"/>
-<circle cx="422" cy="76" r="44" fill="white" stroke="#111" stroke-width="4"/>
-<line x1="422" y1="18" x2="422" y2="2" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<line x1="422" y1="150" x2="422" y2="166" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<line x1="362" y1="76" x2="346" y2="76" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<line x1="482" y1="76" x2="498" y2="76" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<line x1="380" y1="34" x2="369" y2="23" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<line x1="464" y1="118" x2="475" y2="129" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<line x1="464" y1="34" x2="475" y2="23" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<line x1="380" y1="118" x2="369" y2="129" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<path d="M36,104 Q55,83 76,92 Q81,69 108,72 Q128,58 145,77 C163,70 161,94 152,108 L34,108 Z" fill="white" stroke="#111" stroke-width="3.5" stroke-linejoin="round"/>
-<rect x="18" y="424" width="464" height="62" rx="8" fill="white" stroke="#111" stroke-width="4"/>
-<rect x="96" y="274" width="308" height="154" rx="4" fill="white" stroke="#111" stroke-width="5"/>
-<path d="M66,282 L250,116 L434,282 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<path d="M116,262 L250,146 L384,262" fill="none" stroke="#111" stroke-width="2.5" stroke-linejoin="round"/>
-<rect x="308" y="132" width="44" height="84" fill="white" stroke="#111" stroke-width="4"/>
-<path d="M304,132 Q320,110 330,128 Q341,107 357,132" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<path d="M206,428 L206,320 Q206,298 250,298 Q294,298 294,320 L294,428 Z" fill="white" stroke="#111" stroke-width="4.5"/>
-<circle cx="282" cy="370" r="6" fill="#111"/>
-<path d="M212,332 Q250,310 288,332" fill="none" stroke="#111" stroke-width="3"/>
-<rect x="116" y="302" width="74" height="68" rx="4" fill="white" stroke="#111" stroke-width="4"/>
-<line x1="153" y1="302" x2="153" y2="370" stroke="#111" stroke-width="2.5"/>
-<line x1="116" y1="336" x2="190" y2="336" stroke="#111" stroke-width="2.5"/>
-<rect x="304" y="302" width="74" height="68" rx="4" fill="white" stroke="#111" stroke-width="4"/>
-<line x1="341" y1="302" x2="341" y2="370" stroke="#111" stroke-width="2.5"/>
-<line x1="304" y1="336" x2="378" y2="336" stroke="#111" stroke-width="2.5"/>
-<circle cx="55" cy="344" r="48" fill="white" stroke="#111" stroke-width="4"/>
-<circle cx="40" cy="317" r="30" fill="white" stroke="#111" stroke-width="3.5"/>
-<circle cx="74" cy="320" r="30" fill="white" stroke="#111" stroke-width="3.5"/>
-<line x1="55" y1="392" x2="55" y2="428" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-<path d="M174,424 L181,398 L193,398 L200,424 Z" fill="white" stroke="#111" stroke-width="3"/>
-<circle cx="187" cy="388" r="15" fill="white" stroke="#111" stroke-width="3"/>
-<circle cx="187" cy="388" r="6" fill="#f15bb5" stroke="#111" stroke-width="2"/>
-<path d="M300,424 L307,398 L319,398 L326,424 Z" fill="white" stroke="#111" stroke-width="3"/>
-<circle cx="313" cy="388" r="15" fill="white" stroke="#111" stroke-width="3"/>
-<circle cx="313" cy="388" r="6" fill="#f15bb5" stroke="#111" stroke-width="2"/>
-</svg>`},
-
-sun:{label:"Sun & Rainbow",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
-<rect width="500" height="500" fill="white"/>
-<path d="M56,374 Q250,56 444,374" fill="none" stroke="#111" stroke-width="15" stroke-linecap="round"/>
-<path d="M81,374 Q250,96 419,374" fill="none" stroke="#111" stroke-width="15" stroke-linecap="round"/>
-<path d="M106,374 Q250,136 394,374" fill="none" stroke="#111" stroke-width="15" stroke-linecap="round"/>
-<path d="M131,374 Q250,176 369,374" fill="none" stroke="#111" stroke-width="15" stroke-linecap="round"/>
-<path d="M156,374 Q250,212 344,374" fill="none" stroke="#111" stroke-width="15" stroke-linecap="round"/>
-<path d="M181,374 Q250,244 319,374" fill="none" stroke="#111" stroke-width="15" stroke-linecap="round"/>
-<path d="M16,454 Q250,354 484,454 L484,504 L16,504 Z" fill="white" stroke="#111" stroke-width="4"/>
-<path d="M16,164 Q36,143 57,152 Q62,128 90,131 Q110,117 128,136 C147,129 145,149 136,165 L14,165 Z" fill="white" stroke="#111" stroke-width="3.5" stroke-linejoin="round"/>
-<path d="M341,204 Q360,183 382,192 Q387,168 414,171 Q435,157 452,176 C471,169 469,188 459,204 L339,204 Z" fill="white" stroke="#111" stroke-width="3.5" stroke-linejoin="round"/>
-<circle cx="250" cy="298" r="69" fill="white" stroke="#111" stroke-width="5"/>
-<line x1="250" y1="217" x2="250" y2="195" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-<line x1="250" y1="379" x2="250" y2="401" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-<line x1="169" y1="298" x2="147" y2="298" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-<line x1="331" y1="298" x2="353" y2="298" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-<line x1="192" y1="241" x2="177" y2="226" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-<line x1="308" y1="355" x2="323" y2="370" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-<line x1="308" y1="241" x2="323" y2="226" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-<line x1="192" y1="355" x2="177" y2="370" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-<circle cx="228" cy="284" r="14" fill="white" stroke="#111" stroke-width="4"/>
-<circle cx="272" cy="284" r="14" fill="white" stroke="#111" stroke-width="4"/>
-<circle cx="232" cy="281" r="6" fill="#111"/>
-<circle cx="276" cy="281" r="6" fill="#111"/>
-<path d="M216,320 Q250,345 284,320" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-<circle cx="212" cy="309" r="15" fill="none" stroke="#111" stroke-width="2" stroke-dasharray="4,3"/>
-<circle cx="288" cy="309" r="15" fill="none" stroke="#111" stroke-width="2" stroke-dasharray="4,3"/>
-<path d="M56,374 L51,406 L76,406 L71,374" fill="white" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
-<circle cx="63" cy="397" r="6" fill="#ffd93d" stroke="#111" stroke-width="2"/>
-<circle cx="70" cy="386" r="6" fill="#ffd93d" stroke="#111" stroke-width="2"/>
-<path d="M444,374 L439,406 L464,406 L459,374" fill="white" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
-<circle cx="451" cy="397" r="6" fill="#ffd93d" stroke="#111" stroke-width="2"/>
-<circle cx="458" cy="386" r="6" fill="#ffd93d" stroke="#111" stroke-width="2"/>
-<circle cx="126" cy="444" r="9" fill="white" stroke="#111" stroke-width="2.5"/>
-<circle cx="126" cy="444" r="3" fill="#f15bb5"/>
-<line x1="126" y1="453" x2="126" y2="474" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-<circle cx="376" cy="442" r="9" fill="white" stroke="#111" stroke-width="2.5"/>
-<circle cx="376" cy="442" r="3" fill="#f15bb5"/>
-<line x1="376" y1="451" x2="376" y2="472" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-<circle cx="250" cy="436" r="10" fill="white" stroke="#111" stroke-width="2.5"/>
-<circle cx="250" cy="436" r="4" fill="#57cc04"/>
-<line x1="250" y1="446" x2="250" y2="467" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-</svg>`},
-
-cat:{label:"Cat",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
-<rect width="500" height="500" fill="white"/>
-<path d="M18,452 Q250,422 482,452 L482,500 L18,500 Z" fill="white" stroke="#111" stroke-width="4"/>
-<path d="M332,372 C383,342 434,312 452,268 C462,244 447,231 437,248 C420,278 380,308 340,340" fill="none" stroke="#111" stroke-width="7" stroke-linecap="round"/>
-<ellipse cx="455" cy="254" rx="19" ry="14" transform="rotate(-28,455,254)" fill="white" stroke="#111" stroke-width="4"/>
-<ellipse cx="230" cy="342" rx="132" ry="102" fill="white" stroke="#111" stroke-width="5"/>
-<rect x="192" y="226" width="78" height="62" rx="22" fill="white" stroke="#111" stroke-width="5"/>
-<ellipse cx="230" cy="196" rx="97" ry="87" fill="white" stroke="#111" stroke-width="5"/>
-<path d="M146,150 L129,88 L191,130 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<path d="M146,150 L140,111 L184,133 Z" fill="white" stroke="#111" stroke-width="4" stroke-linejoin="round"/>
-<path d="M314,150 L331,88 L269,130 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<path d="M314,150 L320,111 L276,133 Z" fill="white" stroke="#111" stroke-width="4" stroke-linejoin="round"/>
-<ellipse cx="196" cy="190" rx="23" ry="27" fill="white" stroke="#111" stroke-width="4"/>
-<ellipse cx="196" cy="192" rx="10" ry="21" fill="#111"/>
-<circle cx="200" cy="184" r="5" fill="white"/>
-<ellipse cx="264" cy="190" rx="23" ry="27" fill="white" stroke="#111" stroke-width="4"/>
-<ellipse cx="264" cy="192" rx="10" ry="21" fill="#111"/>
-<circle cx="268" cy="184" r="5" fill="white"/>
-<path d="M220,220 L230,228 L240,220 Z" fill="#f15bb5" stroke="#111" stroke-width="2.5"/>
-<path d="M230,228 Q218,242 210,238" fill="none" stroke="#111" stroke-width="3" stroke-linecap="round"/>
-<path d="M230,228 Q242,242 250,238" fill="none" stroke="#111" stroke-width="3" stroke-linecap="round"/>
-<line x1="168" y1="224" x2="218" y2="228" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-<line x1="164" y1="234" x2="216" y2="234" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-<line x1="168" y1="244" x2="218" y2="238" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-<line x1="292" y1="224" x2="242" y2="228" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-<line x1="296" y1="234" x2="244" y2="234" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-<line x1="292" y1="244" x2="242" y2="238" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-<ellipse cx="174" cy="434" rx="35" ry="23" fill="white" stroke="#111" stroke-width="4"/>
-<path d="M156,434 Q160,450 174,450 Q188,450 192,434" fill="none" stroke="#111" stroke-width="2.5"/>
-<line x1="174" y1="434" x2="174" y2="450" stroke="#111" stroke-width="2"/>
-<ellipse cx="278" cy="434" rx="35" ry="23" fill="white" stroke="#111" stroke-width="4"/>
-<path d="M260,434 Q264,450 278,450 Q292,450 296,434" fill="none" stroke="#111" stroke-width="2.5"/>
-<line x1="278" y1="434" x2="278" y2="450" stroke="#111" stroke-width="2"/>
-<path d="M166,272 Q230,287 294,272" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/>
-<circle cx="230" cy="280" r="8" fill="white" stroke="#111" stroke-width="3"/>
-</svg>`},
-
-dog:{label:"Dog",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
-<rect width="500" height="500" fill="white"/>
-<path d="M18,457 Q250,427 482,457 L482,500 L18,500 Z" fill="white" stroke="#111" stroke-width="4"/>
-<path d="M350,350 C381,320 414,293 430,258 C438,240 426,230 417,244 C402,269 370,297 347,330" fill="none" stroke="#111" stroke-width="7" stroke-linecap="round"/>
-<ellipse cx="434" cy="250" rx="21" ry="15" transform="rotate(-24,434,250)" fill="white" stroke="#111" stroke-width="4"/>
-<ellipse cx="228" cy="342" rx="137" ry="107" fill="white" stroke="#111" stroke-width="5"/>
-<rect x="190" y="234" width="82" height="64" rx="24" fill="white" stroke="#111" stroke-width="5"/>
-<ellipse cx="232" cy="198" rx="104" ry="90" fill="white" stroke="#111" stroke-width="5"/>
-<path d="M133,164 C100,150 78,180 86,221 C94,260 131,272 158,256 C148,231 143,200 144,173 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<path d="M331,164 C364,150 386,180 378,221 C370,260 333,272 306,256 C316,231 321,200 320,173 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
-<circle cx="200" cy="184" r="23" fill="white" stroke="#111" stroke-width="4"/>
-<circle cx="200" cy="186" r="13" fill="#111"/>
-<circle cx="205" cy="180" r="5" fill="white"/>
-<circle cx="264" cy="184" r="23" fill="white" stroke="#111" stroke-width="4"/>
-<circle cx="264" cy="186" r="13" fill="#111"/>
-<circle cx="269" cy="180" r="5" fill="white"/>
-<path d="M182,163 Q200,156 218,163" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<path d="M246,163 Q264,156 282,163" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-<ellipse cx="232" cy="234" rx="42" ry="32" fill="white" stroke="#111" stroke-width="4"/>
-<ellipse cx="232" cy="220" rx="17" ry="11" fill="#111"/>
-<path d="M232,232 Q218,248 208,244" fill="none" stroke="#111" stroke-width="3" stroke-linecap="round"/>
-<path d="M232,232 Q246,248 256,244" fill="none" stroke="#111" stroke-width="3" stroke-linecap="round"/>
-<path d="M216,246 Q232,264 248,246" fill="white" stroke="#111" stroke-width="3"/>
-<path d="M218,250 Q232,266 246,250" fill="#f15bb5" stroke="none"/>
-<ellipse cx="168" cy="442" rx="37" ry="23" fill="white" stroke="#111" stroke-width="4"/>
-<path d="M150,442 Q154,460 168,460 Q182,460 186,442" fill="none" stroke="#111" stroke-width="2.5"/>
-<line x1="168" y1="442" x2="168" y2="460" stroke="#111" stroke-width="2"/>
-<ellipse cx="278" cy="442" rx="37" ry="23" fill="white" stroke="#111" stroke-width="4"/>
-<path d="M260,442 Q264,460 278,460 Q292,460 296,442" fill="none" stroke="#111" stroke-width="2.5"/>
-<line x1="278" y1="442" x2="278" y2="460" stroke="#111" stroke-width="2"/>
-<path d="M163,280 Q232,296 301,280" fill="none" stroke="#111" stroke-width="5.5" stroke-linecap="round"/>
-<circle cx="232" cy="288" r="9" fill="white" stroke="#111" stroke-width="3"/>
-</svg>`}
-
+r_dog:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><rect width="500" height="500" fill="white"/><path d="M18,457 Q250,427 482,457 L482,500 L18,500 Z" fill="white" stroke="#111" stroke-width="4"/><path d="M350,350 C381,320 414,293 430,258 C438,240 426,230 417,244 C402,269 370,297 347,330" fill="none" stroke="#111" stroke-width="7" stroke-linecap="round"/><ellipse cx="434" cy="250" rx="21" ry="15" transform="rotate(-24,434,250)" fill="white" stroke="#111" stroke-width="4"/><ellipse cx="228" cy="342" rx="137" ry="107" fill="white" stroke="#111" stroke-width="5"/><rect x="190" y="234" width="82" height="64" rx="24" fill="white" stroke="#111" stroke-width="5"/><ellipse cx="232" cy="198" rx="104" ry="90" fill="white" stroke="#111" stroke-width="5"/><path d="M133,164 C100,150 78,180 86,221 C94,260 131,272 158,256 C148,231 143,200 144,173 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M331,164 C364,150 386,180 378,221 C370,260 333,272 306,256 C316,231 321,200 320,173 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><circle cx="200" cy="184" r="23" fill="white" stroke="#111" stroke-width="4"/><circle cx="200" cy="186" r="13" fill="#111"/><circle cx="205" cy="180" r="5" fill="white"/><circle cx="264" cy="184" r="23" fill="white" stroke="#111" stroke-width="4"/><circle cx="264" cy="186" r="13" fill="#111"/><circle cx="269" cy="180" r="5" fill="white"/><path d="M182,163 Q200,156 218,163" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><path d="M246,163 Q264,156 282,163" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="232" cy="234" rx="42" ry="32" fill="white" stroke="#111" stroke-width="4"/><ellipse cx="232" cy="220" rx="17" ry="11" fill="#111"/><path d="M216,246 Q232,264 248,246" fill="white" stroke="#111" stroke-width="3"/><path d="M218,250 Q232,266 246,250" fill="#f15bb5" stroke="none"/><ellipse cx="168" cy="442" rx="37" ry="23" fill="white" stroke="#111" stroke-width="4"/><ellipse cx="278" cy="442" rx="37" ry="23" fill="white" stroke="#111" stroke-width="4"/><path d="M163,280 Q232,296 301,280" fill="none" stroke="#111" stroke-width="5.5" stroke-linecap="round"/><circle cx="232" cy="288" r="9" fill="white" stroke="#111" stroke-width="3"/></svg>`,
 };
 
 /* ── State ── */
 const CW = 500, CH = 500;
-let activeTool = 'fill';
+let activeTool  = 'fill';
 let activeColor = '#e63946';
-let brushPx = 14;
-let isDrawing = false, lastX = 0, lastY = 0;
+let brushPx     = 14;
+let isDrawing   = false, lastX = 0, lastY = 0;
 const undoStack = [];
-const MAX_UNDO = 40;
+const MAX_UNDO  = 40;
+let colorLayer   = null;
+let outlineLayer = null;
+let activeCat    = '67';
+let activePage   = null;
 
-/* ── The two data layers (both 500×500, RGBA) ── */
-let colorLayer   = null; // user's painted colors — ImageData
-let outlineLayer = null; // baked SVG outline pixels — Uint8ClampedArray
+/* Zoom/pan state */
+let zoomScale = 1;
+let panX = 0, panY = 0;
+let isPanning = false, panStartX = 0, panStartY = 0;
+let pinchStartDist = 0, pinchStartScale = 1;
+const MIN_ZOOM = 0.4, MAX_ZOOM = 5;
 
 /* ── DOM ── */
 const mainCanvas = document.getElementById('mainCanvas');
 const ctx        = mainCanvas.getContext('2d', { willReadFrequently: true });
 const canvasArea = document.getElementById('canvasArea');
+const zoomWrap   = document.getElementById('zoomWrap');
 const loadOvl    = document.getElementById('loadOvl');
 const toastEl    = document.getElementById('toast');
-const pagePills  = document.getElementById('pagePills');
+const pageBar    = document.getElementById('pageBar');
 const colorGrid  = document.getElementById('colorGrid');
 const brushInput = document.getElementById('brushSize');
 const brushLbl   = document.getElementById('brushLbl');
 const customClr  = document.getElementById('customColor');
 const fileInput  = document.getElementById('fileInput');
 
+const outlineTmp    = document.createElement('canvas');
+const outlineTmpCtx = outlineTmp.getContext('2d');
+
 /* ── Sizing ── */
-let displayScale = 1;
-
 function resize() {
-  const ar  = canvasArea.getBoundingClientRect();
+  const ar = canvasArea.getBoundingClientRect();
   if (!ar.width || !ar.height) return;
-  const pad = 16;
-  displayScale = Math.min((ar.width - pad*2)/CW, (ar.height - pad*2)/CH, 2);
-  const dw = Math.round(CW * displayScale);
-  const dh = Math.round(CH * displayScale);
-
-  // Preserve drawings across resize
-  const prevColor = colorLayer ? colorLayer : null;
-
-  mainCanvas.width  = CW;
-  mainCanvas.height = CH;
-  mainCanvas.style.width  = dw + 'px';
-  mainCanvas.style.height = dh + 'px';
-
-  if (!colorLayer) colorLayer = ctx.createImageData(CW, CH);
+  const pad = 20;
+  const sc  = Math.min((ar.width-pad*2)/CW, (ar.height-pad*2)/CH, 2);
+  const dw  = Math.round(CW*sc), dh = Math.round(CH*sc);
+  const prev = colorLayer ? colorLayer : null;
+  mainCanvas.width = CW; mainCanvas.height = CH;
+  mainCanvas.style.width = dw+'px'; mainCanvas.style.height = dh+'px';
+  if (!colorLayer) colorLayer = ctx.createImageData(CW,CH);
   composite();
 }
-
 const ro = new ResizeObserver(resize);
 ro.observe(canvasArea);
 
-/* ── Composite: draw white bg + colorLayer + outlineLayer onto mainCanvas ── */
+/* ── Zoom/Pan ── */
+function applyTransform() {
+  zoomWrap.style.transform = `translate(${panX}px,${panY}px) scale(${zoomScale})`;
+}
+function zoomBy(delta, cx, cy) {
+  const ar = canvasArea.getBoundingClientRect();
+  const ox = (cx ?? ar.width/2)  - ar.left;
+  const oy = (cy ?? ar.height/2) - ar.top;
+  const newScale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoomScale * delta));
+  const ratio = newScale / zoomScale;
+  panX = ox + (panX - ox) * ratio;
+  panY = oy + (panY - oy) * ratio;
+  zoomScale = newScale;
+  applyTransform();
+}
+function zoomFit() {
+  zoomScale = 1; panX = 0; panY = 0; applyTransform();
+}
+
+/* Desktop zoom buttons */
+document.getElementById('deskZoomIn').addEventListener('click',  () => zoomBy(1.3));
+document.getElementById('deskZoomOut').addEventListener('click', () => zoomBy(0.77));
+document.getElementById('deskZoomFit').addEventListener('click', zoomFit);
+document.getElementById('btnZoomIn').addEventListener('click',   () => zoomBy(1.3));
+document.getElementById('btnZoomOut').addEventListener('click',  () => zoomBy(0.77));
+document.getElementById('btnZoomReset').addEventListener('click',zoomFit);
+document.getElementById('mZoomIn').addEventListener('click',     () => zoomBy(1.3));
+document.getElementById('mZoomOut').addEventListener('click',    () => zoomBy(0.77));
+document.getElementById('mZoomFit').addEventListener('click',    zoomFit);
+
+/* Mouse wheel zoom */
+canvasArea.addEventListener('wheel', e => {
+  e.preventDefault();
+  zoomBy(e.deltaY < 0 ? 1.12 : 0.89, e.clientX, e.clientY);
+}, { passive: false });
+
+/* Pinch-to-zoom on touch */
+canvasArea.addEventListener('touchstart', e => {
+  if (e.touches.length === 2) {
+    pinchStartDist  = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+    pinchStartScale = zoomScale;
+    e.preventDefault();
+  }
+}, { passive: false });
+canvasArea.addEventListener('touchmove', e => {
+  if (e.touches.length === 2) {
+    e.preventDefault();
+    const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+    const newScale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, pinchStartScale * (dist / pinchStartDist)));
+    const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+    const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+    const ar = canvasArea.getBoundingClientRect();
+    const ratio = newScale / zoomScale;
+    panX = (midX-ar.left) + (panX - (midX-ar.left)) * ratio;
+    panY = (midY-ar.top)  + (panY - (midY-ar.top))  * ratio;
+    zoomScale = newScale;
+    applyTransform();
+  }
+}, { passive: false });
+
+/* Two-finger pan (when zoomed in) — separate from draw */
+let twoFingerPanStart = null;
+canvasArea.addEventListener('touchstart', e => {
+  if (e.touches.length === 2) {
+    twoFingerPanStart = { px: panX, py: panY, mx: (e.touches[0].clientX+e.touches[1].clientX)/2, my: (e.touches[0].clientY+e.touches[1].clientY)/2 };
+  } else { twoFingerPanStart = null; }
+}, { passive: false });
+canvasArea.addEventListener('touchmove', e => {
+  if (e.touches.length === 2 && twoFingerPanStart) {
+    const mx = (e.touches[0].clientX+e.touches[1].clientX)/2;
+    const my = (e.touches[0].clientY+e.touches[1].clientY)/2;
+    panX = twoFingerPanStart.px + (mx - twoFingerPanStart.mx);
+    panY = twoFingerPanStart.py + (my - twoFingerPanStart.my);
+    applyTransform();
+  }
+}, { passive: false });
+
+/* ── Composite ── */
 function composite() {
-  // 1. White background
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, CW, CH);
-  // 2. Color fills
   if (colorLayer) ctx.putImageData(colorLayer, 0, 0);
-  // 3. Outline on top (using globalCompositeOperation to only paint dark pixels)
   if (outlineLayer) {
-    // Build a temp ImageData from outline and stamp it with 'multiply' or just draw it
     const tmp = ctx.createImageData(CW, CH);
     tmp.data.set(outlineLayer);
-    // Put outline as separate canvas to use drawImage with composite op
     outlineTmp.width = CW; outlineTmp.height = CH;
     outlineTmpCtx.putImageData(tmp, 0, 0);
     ctx.drawImage(outlineTmp, 0, 0);
   }
 }
 
-// Temp canvas for outline stamping
-const outlineTmp    = document.createElement('canvas');
-const outlineTmpCtx = outlineTmp.getContext('2d');
-
 /* ── Load page ── */
-function loadPage(key) {
-  const page = PAGES[key];
-  if (!page) return;
+function loadPage(pageObj) {
+  if (!pageObj) return;
+  activePage = pageObj;
   loadOvl.classList.remove('gone');
+  colorLayer = null; outlineLayer = null;
+  undoStack.length = 0;
+  zoomFit();
 
-  // Reset color layer
-  colorLayer = null;
+  if (pageObj.type === 'svg') {
+    const svgStr = SVG_DATA[pageObj.key];
+    if (!svgStr) { loadOvl.classList.add('gone'); toast('SVG not found 😕'); return; }
+    processSvgString(svgStr);
+  } else {
+    // PNG: load as image
+    const img = new Image();
+    img.onload = () => {
+      const off = document.createElement('canvas');
+      off.width = CW; off.height = CH;
+      const offCtx = off.getContext('2d', { willReadFrequently: true });
+      offCtx.fillStyle = '#fff';
+      offCtx.fillRect(0,0,CW,CH);
+      // Scale to fit
+      const sc2 = Math.min(CW/img.naturalWidth, CH/img.naturalHeight, 1);
+      const dw = img.naturalWidth*sc2, dh = img.naturalHeight*sc2;
+      offCtx.drawImage(img, (CW-dw)/2, (CH-dh)/2, dw, dh);
+      bakeOutline(offCtx.getImageData(0,0,CW,CH).data);
+      colorLayer = ctx.createImageData(CW,CH);
+      resize(); composite();
+      setTimeout(()=>loadOvl.classList.add('gone'),80);
+    };
+    img.onerror = () => { loadOvl.classList.add('gone'); toast('Could not load image.\nMake sure '+pageObj.src+' is in the same folder 😕'); };
+    img.src = pageObj.src;
+  }
+}
 
-  // Parse SVG string into an Image via blob URL, draw onto offscreen canvas
-  const blob = new Blob([page.svg], { type: 'image/svg+xml;charset=utf-8' });
+function processSvgString(svgStr) {
+  const blob = new Blob([svgStr],{type:'image/svg+xml;charset=utf-8'});
   const url  = URL.createObjectURL(blob);
   const img  = new Image();
-
   img.onload = () => {
     URL.revokeObjectURL(url);
-
-    // Draw SVG onto an offscreen canvas to extract pixel data
-    const off    = document.createElement('canvas');
-    off.width    = CW;
-    off.height   = CH;
-    const offCtx = off.getContext('2d', { willReadFrequently: true });
-    offCtx.drawImage(img, 0, 0, CW, CH);
-
-    const rawData = offCtx.getImageData(0, 0, CW, CH).data;
-
-    // Build outlineLayer: keep only non-white pixels (the dark lines)
-    // White/near-white pixels become fully transparent so they don't
-    // cover the color fills. Dark pixels stay opaque.
-    const outData = new Uint8ClampedArray(CW * CH * 4);
-    for (let i = 0; i < rawData.length; i += 4) {
-      const r = rawData[i], g = rawData[i+1], b = rawData[i+2];
-      const isWhitish = r > 220 && g > 220 && b > 220;
-      if (isWhitish) {
-        // Transparent — let color fill show through
-        outData[i] = outData[i+1] = outData[i+2] = outData[i+3] = 0;
-      } else {
-        // Keep the outline pixel fully opaque
-        outData[i]   = r;
-        outData[i+1] = g;
-        outData[i+2] = b;
-        outData[i+3] = 255;
-      }
-    }
-    outlineLayer = outData;
-
-    // Fresh empty color layer
-    colorLayer = ctx.createImageData(CW, CH);
-    // Start with all-transparent (white comes from composite bg)
-
-    undoStack.length = 0;
-    resize();
-    composite();
-    setTimeout(() => loadOvl.classList.add('gone'), 80);
+    const off = document.createElement('canvas');
+    off.width = CW; off.height = CH;
+    const offCtx = off.getContext('2d',{willReadFrequently:true});
+    offCtx.drawImage(img,0,0,CW,CH);
+    bakeOutline(offCtx.getImageData(0,0,CW,CH).data);
+    colorLayer = ctx.createImageData(CW,CH);
+    resize(); composite();
+    setTimeout(()=>loadOvl.classList.add('gone'),80);
   };
-
-  img.onerror = () => {
-    URL.revokeObjectURL(url);
-    loadOvl.classList.add('gone');
-    toast('Could not load page 😕');
-  };
-
+  img.onerror = () => { URL.revokeObjectURL(url); loadOvl.classList.add('gone'); toast('Could not load page 😕'); };
   img.src = url;
 }
 
+function bakeOutline(rawData) {
+  const outData = new Uint8ClampedArray(CW*CH*4);
+  for (let i=0;i<rawData.length;i+=4){
+    const r=rawData[i],g=rawData[i+1],b=rawData[i+2];
+    const isWhite = r>220&&g>220&&b>220;
+    if(isWhite){ outData[i]=outData[i+1]=outData[i+2]=outData[i+3]=0; }
+    else { outData[i]=r;outData[i+1]=g;outData[i+2]=b;outData[i+3]=255; }
+  }
+  outlineLayer = outData;
+}
+
+/* ── Category / page bar ── */
+function buildPageBar(cat) {
+  pageBar.innerHTML = '';
+  const pages = CATS[cat]?.pages ?? [];
+  pages.forEach((p,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'page-pill' + (i===0?' active':'');
+    btn.textContent = p.label;
+    btn.addEventListener('click', () => {
+      pageBar.querySelectorAll('.page-pill').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      loadPage(p);
+    });
+    pageBar.appendChild(btn);
+  });
+  if (cat === 'upload') {
+    const upBtn = document.createElement('button');
+    upBtn.className = 'page-pill page-pill-upload';
+    upBtn.textContent = '+ Upload Image';
+    upBtn.addEventListener('click', ()=>fileInput.click());
+    pageBar.appendChild(upBtn);
+  }
+  // Auto-load first page
+  if (pages.length > 0) loadPage(pages[0]);
+}
+
+document.getElementById('catTabs').addEventListener('click', e => {
+  const tab = e.target.closest('.cat-tab');
+  if (!tab) return;
+  activeCat = tab.dataset.cat;
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.toggle('active', t===tab));
+  buildPageBar(activeCat);
+});
+
 /* ── Flood fill ── */
-function hexToRgb(hex) {
-  const h = hex.replace('#','');
-  return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
-}
+function hexToRgb(hex){const h=hex.replace('#','');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+function isWall(pos){if(!outlineLayer)return false;const i=pos*4;return outlineLayer[i+3]>60;}
 
-function isOutlinePixel(pos) {
-  // A pixel is a wall if the outline layer has a dark opaque pixel here
-  if (!outlineLayer) return false;
-  const i = pos * 4;
-  return outlineLayer[i+3] > 60; // any non-transparent outline pixel = wall
-}
-
-function floodFill(sx, sy) {
-  if (!outlineLayer || !colorLayer) return;
-  const [fr, fg, fb] = hexToRgb(activeColor);
-
-  const pos0 = sy * CW + sx;
-  if (isOutlinePixel(pos0)) return; // clicked on an outline — do nothing
-
+function floodFill(sx,sy){
+  if(!outlineLayer||!colorLayer)return;
+  const [fr,fg,fb]=hexToRgb(activeColor);
+  const pos0=sy*CW+sx;
+  if(isWall(pos0))return;
   pushUndo();
-
-  const cd = colorLayer.data;
-
-  // What color is currently at the start pixel in the color layer?
-  const si    = pos0 * 4;
-  const startR = cd[si];
-  const startG = cd[si+1];
-  const startB = cd[si+2];
-  const startA = cd[si+3]; // 0 = unfilled (shows white bg), 255 = filled
-
-  // If the region is already exactly this color, nothing to do
-  if (startA === 255 && startR === fr && startG === fg && startB === fb) return;
-
-  const TOL = 20;
-  function matches(pi) {
-    // Match if same fill state as start pixel
-    const a = cd[pi+3];
-    if (startA === 0) return a === 0; // both unfilled
-    return a === 255 &&
-      Math.abs(cd[pi]   - startR) <= TOL &&
-      Math.abs(cd[pi+1] - startG) <= TOL &&
-      Math.abs(cd[pi+2] - startB) <= TOL;
+  const cd=colorLayer.data;
+  const si=pos0*4;
+  const startR=cd[si],startG=cd[si+1],startB=cd[si+2],startA=cd[si+3];
+  if(startA===255&&startR===fr&&startG===fg&&startB===fb)return;
+  const TOL=20;
+  const matches=pi=>{
+    const a=cd[pi+3];
+    if(startA===0)return a===0;
+    return a===255&&Math.abs(cd[pi]-startR)<=TOL&&Math.abs(cd[pi+1]-startG)<=TOL&&Math.abs(cd[pi+2]-startB)<=TOL;
+  };
+  const vis=new Uint8Array(CW*CH);
+  const stk=[pos0];
+  while(stk.length){
+    const pos=stk.pop();
+    if(vis[pos])continue;
+    if(isWall(pos))continue;
+    const pi=pos*4;
+    if(!matches(pi))continue;
+    vis[pos]=1;
+    cd[pi]=fr;cd[pi+1]=fg;cd[pi+2]=fb;cd[pi+3]=255;
+    const x=pos%CW,y=(pos/CW)|0;
+    if(x>0)stk.push(pos-1);
+    if(x<CW-1)stk.push(pos+1);
+    if(y>0)stk.push(pos-CW);
+    if(y<CH-1)stk.push(pos+CW);
   }
-
-  const visited = new Uint8Array(CW * CH);
-  const stack   = [pos0];
-
-  while (stack.length) {
-    const pos = stack.pop();
-    if (visited[pos]) continue;
-    if (isOutlinePixel(pos)) continue; // wall
-
-    const pi = pos * 4;
-    if (!matches(pi)) continue;
-
-    visited[pos] = 1;
-    cd[pi]   = fr;
-    cd[pi+1] = fg;
-    cd[pi+2] = fb;
-    cd[pi+3] = 255;
-
-    const x = pos % CW;
-    const y = (pos / CW) | 0;
-    if (x > 0)      stack.push(pos - 1);
-    if (x < CW - 1) stack.push(pos + 1);
-    if (y > 0)      stack.push(pos - CW);
-    if (y < CH - 1) stack.push(pos + CW);
-  }
-
   composite();
 }
 
-/* ── Undo / Clear ── */
-function pushUndo() {
-  if (undoStack.length >= MAX_UNDO) undoStack.shift();
-  // Deep-copy colorLayer data
-  const copy = ctx.createImageData(CW, CH);
-  copy.data.set(colorLayer.data);
-  undoStack.push(copy);
+/* ── Undo/Clear ── */
+function pushUndo(){
+  if(undoStack.length>=MAX_UNDO)undoStack.shift();
+  const c=ctx.createImageData(CW,CH);c.data.set(colorLayer.data);undoStack.push(c);
 }
-function undo() {
-  if (!undoStack.length) { toast('Nothing to undo!'); return; }
-  colorLayer = undoStack.pop();
-  composite();
-  toast('Undone ↩️');
-}
-function clearColors() {
-  undoStack.length = 0;
-  colorLayer = ctx.createImageData(CW, CH);
-  composite();
-  toast('Cleared! 🧹');
-}
+function undo(){if(!undoStack.length){toast('Nothing to undo!');return;}colorLayer=undoStack.pop();composite();toast('Undone ↩️');}
+function clearColors(){undoStack.length=0;colorLayer=ctx.createImageData(CW,CH);composite();toast('Cleared! 🧹');}
 
-/* ── Draw / Erase directly onto colorLayer ── */
-function drawAt(x, y, isFirst) {
-  if (!colorLayer) return;
-  // Draw into a temporary canvas, then merge into colorLayer
-  const tmpC   = document.createElement('canvas');
-  tmpC.width   = CW; tmpC.height = CH;
-  const tmpCtx = tmpC.getContext('2d');
-
-  // Restore current colorLayer onto tmp
-  tmpCtx.putImageData(colorLayer, 0, 0);
-
-  tmpCtx.lineWidth   = brushPx;
-  tmpCtx.lineCap     = 'round';
-  tmpCtx.lineJoin    = 'round';
-
-  if (activeTool === 'eraser') {
-    tmpCtx.globalCompositeOperation = 'destination-out';
-    tmpCtx.strokeStyle = 'rgba(0,0,0,1)';
-    tmpCtx.fillStyle   = 'rgba(0,0,0,1)';
-  } else {
-    tmpCtx.globalCompositeOperation = 'source-over';
-    tmpCtx.strokeStyle = activeColor;
-    tmpCtx.fillStyle   = activeColor;
-  }
-
-  if (isFirst) {
-    tmpCtx.beginPath();
-    tmpCtx.arc(x, y, brushPx/2, 0, Math.PI*2);
-    tmpCtx.fill();
-  } else {
-    tmpCtx.beginPath();
-    tmpCtx.moveTo(lastX, lastY);
-    tmpCtx.lineTo(x, y);
-    tmpCtx.stroke();
-  }
-
-  colorLayer = tmpCtx.getImageData(0, 0, CW, CH);
-  composite();
+/* ── Draw/Erase ── */
+function drawAt(x,y,isFirst){
+  if(!colorLayer)return;
+  const tmpC=document.createElement('canvas');tmpC.width=CW;tmpC.height=CH;
+  const tc=tmpC.getContext('2d');
+  tc.putImageData(colorLayer,0,0);
+  tc.lineWidth=brushPx;tc.lineCap='round';tc.lineJoin='round';
+  if(activeTool==='eraser'){tc.globalCompositeOperation='destination-out';tc.strokeStyle=tc.fillStyle='rgba(0,0,0,1)';}
+  else{tc.globalCompositeOperation='source-over';tc.strokeStyle=tc.fillStyle=activeColor;}
+  if(isFirst){tc.beginPath();tc.arc(x,y,brushPx/2,0,Math.PI*2);tc.fill();}
+  else{tc.beginPath();tc.moveTo(lastX,lastY);tc.lineTo(x,y);tc.stroke();}
+  colorLayer=tc.getImageData(0,0,CW,CH);composite();
 }
 
-/* ── Canvas pointer events ── */
-function getXY(e) {
-  const r  = mainCanvas.getBoundingClientRect();
-  const cx = e.clientX ?? (e.touches?.[0]?.clientX ?? 0);
-  const cy = e.clientY ?? (e.touches?.[0]?.clientY ?? 0);
-  return [
-    Math.round((cx - r.left) * (CW / r.width)),
-    Math.round((cy - r.top)  * (CH / r.height))
-  ];
+/* ── Pointer events — skip if 2-finger gesture ── */
+let activePointers = 0;
+function getCanvasXY(e){
+  const r=mainCanvas.getBoundingClientRect();
+  const cx=e.clientX??(e.touches?.[0]?.clientX??0);
+  const cy=e.clientY??(e.touches?.[0]?.clientY??0);
+  return[Math.round((cx-r.left)*(CW/r.width)),Math.round((cy-r.top)*(CH/r.height))];
 }
 
-mainCanvas.addEventListener('pointerdown', e => {
+mainCanvas.addEventListener('pointerdown',e=>{
+  activePointers++;
+  if(activePointers>1){isDrawing=false;return;} // ignore if multi-touch
   e.preventDefault();
-  const [x, y] = getXY(e);
-  if (x < 0 || x >= CW || y < 0 || y >= CH) return;
+  const[x,y]=getCanvasXY(e);
+  if(x<0||x>=CW||y<0||y>=CH)return;
+  if(activeTool==='fill'){floodFill(x,y);}
+  else{isDrawing=true;pushUndo();drawAt(x,y,true);[lastX,lastY]=[x,y];}
+},{passive:false});
 
-  if (activeTool === 'fill') {
-    floodFill(x, y);
-  } else {
-    isDrawing = true;
-    pushUndo();
-    drawAt(x, y, true);
-    [lastX, lastY] = [x, y];
-  }
-}, { passive: false });
-
-mainCanvas.addEventListener('pointermove', e => {
-  if (!isDrawing) return;
+mainCanvas.addEventListener('pointermove',e=>{
+  if(!isDrawing||activePointers>1)return;
   e.preventDefault();
-  const [x, y] = getXY(e);
-  drawAt(x, y, false);
-  [lastX, lastY] = [x, y];
-}, { passive: false });
+  const[x,y]=getCanvasXY(e);
+  drawAt(x,y,false);[lastX,lastY]=[x,y];
+},{passive:false});
 
-['pointerup','pointercancel','pointerleave'].forEach(ev =>
-  mainCanvas.addEventListener(ev, () => isDrawing = false));
-
-mainCanvas.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+['pointerup','pointercancel','pointerleave'].forEach(ev=>mainCanvas.addEventListener(ev,()=>{activePointers=Math.max(0,activePointers-1);if(activePointers===0)isDrawing=false;}));
 
 /* ── Tool switching ── */
-function setTool(t) {
-  activeTool = t;
-  document.getElementById('btnFill').classList.toggle('af', t === 'fill');
-  document.getElementById('btnDraw').classList.toggle('ad', t === 'draw');
-  document.getElementById('btnEraser').classList.toggle('ae', t === 'eraser');
-  mainCanvas.style.cursor = t === 'fill' ? 'crosshair' : 'crosshair';
+function setTool(t){
+  activeTool=t;
+  ['btnFill','btnDraw','btnEraser'].forEach(id=>{const b=document.getElementById(id);if(b){b.classList.remove('af','ad','ae');}});
+  ['mFill','mDraw','mEraser'].forEach(id=>{const b=document.getElementById(id);if(b){b.classList.remove('af','ad','ae');}});
+  const cls=t==='fill'?'af':t==='draw'?'ad':'ae';
+  document.getElementById('btnFill')?.classList.toggle('af',t==='fill');
+  document.getElementById('btnDraw')?.classList.toggle('ad',t==='draw');
+  document.getElementById('btnEraser')?.classList.toggle('ae',t==='eraser');
+  document.getElementById('mFill')?.classList.toggle('af',t==='fill');
+  document.getElementById('mDraw')?.classList.toggle('ad',t==='draw');
+  document.getElementById('mEraser')?.classList.toggle('ae',t==='eraser');
 }
 
 /* ── Color ── */
-function pickColor(hex) {
-  activeColor = hex;
-  colorGrid.querySelectorAll('.swatch').forEach(s =>
-    s.classList.toggle('on', s.dataset.c === hex));
+function pickColor(hex){
+  activeColor=hex;
+  document.querySelectorAll('.swatch').forEach(s=>s.classList.toggle('on',s.dataset.c===hex));
 }
 
 /* ── Save ── */
-function saveImage() {
-  // Create a clean composite for saving
-  const tmp    = document.createElement('canvas');
-  tmp.width    = CW; tmp.height = CH;
-  const tCtx   = tmp.getContext('2d');
-  tCtx.fillStyle = '#fff';
-  tCtx.fillRect(0, 0, CW, CH);
-  if (colorLayer) tCtx.putImageData(colorLayer, 0, 0);
-  if (outlineLayer) {
-    outlineTmp.width = CW; outlineTmp.height = CH;
-    const tmpID = tCtx.createImageData(CW, CH);
-    tmpID.data.set(outlineLayer);
-    outlineTmpCtx.putImageData(tmpID, 0, 0);
-    tCtx.drawImage(outlineTmp, 0, 0);
-  }
-  const a = document.createElement('a');
-  a.download = 'sixty-seven.png';
-  a.href = tmp.toDataURL('image/png');
-  a.click();
-  toast('Saved! 💾');
+function saveImage(){
+  const tmp=document.createElement('canvas');tmp.width=CW;tmp.height=CH;
+  const tc=tmp.getContext('2d');tc.fillStyle='#fff';tc.fillRect(0,0,CW,CH);
+  if(colorLayer)tc.putImageData(colorLayer,0,0);
+  if(outlineLayer){const id=tc.createImageData(CW,CH);id.data.set(outlineLayer);outlineTmp.width=CW;outlineTmp.height=CH;outlineTmpCtx.putImageData(id,0,0);tc.drawImage(outlineTmp,0,0);}
+  const a=document.createElement('a');a.download='sixty-seven.png';a.href=tmp.toDataURL('image/png');a.click();toast('Saved! 💾');
 }
 
 /* ── Upload ── */
-function handleUpload(file) {
-  if (!file || !file.type.startsWith('image/')) { toast('Pick an image or SVG 🖼️'); return; }
-
-  const name = file.name.replace(/\.[^.]+$/,'').slice(0,14);
-  const isSvg = file.type === 'image/svg+xml' || file.name.endsWith('.svg');
-  const reader = new FileReader();
-
-  reader.onload = ev => {
-    const key = 'up_' + Date.now();
-
-    if (isSvg) {
-      PAGES[key] = { label: name, svg: ev.target.result };
-    } else {
-      // For raster images, wrap in an SVG so it goes through same pipeline
-      const dataUrl = ev.target.result;
-      PAGES[key] = { label: name, svg:
-        `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500">
-          <image href="${dataUrl}" x="0" y="0" width="500" height="500" preserveAspectRatio="xMidYMid meet"/>
-        </svg>`
+function handleUpload(file){
+  if(!file||!file.type.startsWith('image/')){toast('Pick an image or SVG 🖼️');return;}
+  const name=file.name.replace(/\.[^.]+$/,'').slice(0,14);
+  const isSvg=file.type==='image/svg+xml'||file.name.endsWith('.svg');
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const key='up_'+Date.now();
+    const pageObj={ key, label:'📷 '+name, type: isSvg?'svg':'png', src: null, _data: ev.target.result };
+    CATS.upload.pages.push(pageObj);
+    // Switch to upload category
+    activeCat='upload';
+    document.querySelectorAll('.cat-tab').forEach(t=>t.classList.toggle('active',t.dataset.cat==='upload'));
+    buildPageBar('upload');
+    // Activate the new page
+    const pills=pageBar.querySelectorAll('.page-pill:not(.page-pill-upload)');
+    pills.forEach(p=>p.classList.remove('active'));
+    if(pills.length)pills[pills.length-1].classList.add('active');
+    // Load it
+    if(isSvg){processSvgString(ev.target.result);}
+    else{
+      const img=new Image();
+      img.onload=()=>{
+        const off=document.createElement('canvas');off.width=CW;off.height=CH;
+        const oc=off.getContext('2d',{willReadFrequently:true});
+        oc.fillStyle='#fff';oc.fillRect(0,0,CW,CH);
+        const sc2=Math.min(CW/img.naturalWidth,CH/img.naturalHeight,1);
+        const dw=img.naturalWidth*sc2,dh=img.naturalHeight*sc2;
+        oc.drawImage(img,(CW-dw)/2,(CH-dh)/2,dw,dh);
+        bakeOutline(oc.getImageData(0,0,CW,CH).data);
+        colorLayer=ctx.createImageData(CW,CH);
+        resize();composite();
+        setTimeout(()=>loadOvl.classList.add('gone'),80);
       };
+      img.src=ev.target.result;
+      loadOvl.classList.remove('gone');
+      colorLayer=null;outlineLayer=null;undoStack.length=0;
     }
-
-    const pill = document.createElement('button');
-    pill.className = 'pill';
-    pill.dataset.page = key;
-    pill.textContent = '📷 ' + (name.length > 10 ? name.slice(0,10)+'…' : name);
-    pagePills.insertBefore(pill, document.getElementById('btnUpload'));
-    pagePills.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-    pill.classList.add('active');
-
-    loadPage(key);
     toast('Uploaded! 🎨');
   };
-
-  if (isSvg) reader.readAsText(file);
-  else        reader.readAsDataURL(file);
+  if(isSvg)reader.readAsText(file);else reader.readAsDataURL(file);
 }
 
-/* ── Button wiring ── */
-document.getElementById('btnFill').addEventListener('click',   () => setTool('fill'));
-document.getElementById('btnDraw').addEventListener('click',   () => setTool('draw'));
-document.getElementById('btnEraser').addEventListener('click', () => setTool('eraser'));
-document.getElementById('btnUndo').addEventListener('click',   undo);
-document.getElementById('btnClear').addEventListener('click',  () => {
-  if (confirm('Clear all your coloring? 🧹')) clearColors();
-});
-document.getElementById('btnSave').addEventListener('click', saveImage);
+/* ── Button wiring — desktop ── */
+document.getElementById('btnFill')?.addEventListener('click',  ()=>setTool('fill'));
+document.getElementById('btnDraw')?.addEventListener('click',  ()=>setTool('draw'));
+document.getElementById('btnEraser')?.addEventListener('click',()=>setTool('eraser'));
+document.getElementById('btnUndo')?.addEventListener('click',  undo);
+document.getElementById('btnClear')?.addEventListener('click', ()=>{if(confirm('Clear all?'))clearColors();});
+document.getElementById('btnSave')?.addEventListener('click',  saveImage);
+/* Desktop brush */
+brushInput?.addEventListener('input',()=>{brushPx=parseInt(brushInput.value);brushLbl.textContent=brushPx+'px';});
+/* Desktop colors */
+colorGrid?.addEventListener('click',e=>{const s=e.target.closest('.swatch');if(s&&s.dataset.c)pickColor(s.dataset.c);});
+customClr?.addEventListener('input',()=>{activeColor=customClr.value;document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('on'));});
 
-pagePills.addEventListener('click', e => {
-  const p = e.target.closest('.pill');
-  if (!p || p.id === 'btnUpload') return;
-  pagePills.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
-  p.classList.add('active');
-  loadPage(p.dataset.page);
+/* ── Button wiring — mobile ── */
+document.getElementById('mFill')?.addEventListener('click',   ()=>setTool('fill'));
+document.getElementById('mDraw')?.addEventListener('click',   ()=>setTool('draw'));
+document.getElementById('mEraser')?.addEventListener('click', ()=>setTool('eraser'));
+document.getElementById('mUndo')?.addEventListener('click',   undo);
+document.getElementById('mClear')?.addEventListener('click',  ()=>{if(confirm('Clear all?'))clearColors();});
+document.getElementById('mSave')?.addEventListener('click',   saveImage);
+
+/* Mobile drawer toggle */
+const mobDrawer=document.getElementById('mobDrawer');
+document.getElementById('mobToggle')?.addEventListener('click',()=>{
+  mobDrawer.classList.toggle('open');
+  document.getElementById('mobToggle').textContent=mobDrawer.classList.contains('open')?'✕':'🎨';
+  document.querySelectorAll('#mobToggle span').forEach(s=>s.textContent=mobDrawer.classList.contains('open')?'Close':'More');
 });
 
-brushInput.addEventListener('input', () => {
-  brushPx = parseInt(brushInput.value);
-  brushLbl.textContent = brushPx + 'px';
+/* Mobile brush dots */
+document.getElementById('mobBrushDots')?.addEventListener('click',e=>{
+  const dot=e.target.closest('.bdot');if(!dot)return;
+  brushPx=parseInt(dot.dataset.px);
+  document.querySelectorAll('.bdot').forEach(d=>d.classList.remove('active'));
+  dot.classList.add('active');
 });
-colorGrid.addEventListener('click', e => { const s = e.target.closest('.swatch'); if (s) pickColor(s.dataset.c); });
-colorGrid.addEventListener('touchend', e => { const s = e.target.closest('.swatch'); if (s) { e.preventDefault(); pickColor(s.dataset.c); } }, { passive: false });
-customClr.addEventListener('input', () => { activeColor = customClr.value; colorGrid.querySelectorAll('.swatch').forEach(s => s.classList.remove('on')); });
-document.getElementById('btnUpload').addEventListener('click', () => fileInput.click());
-fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleUpload(fileInput.files[0]); fileInput.value = ''; });
 
-/* ── Splash → App ── */
-function enterApp() {
-  document.getElementById('splash').classList.add('leaving');
-  setTimeout(() => {
-    document.getElementById('splash').style.display = 'none';
-    document.getElementById('app').classList.add('visible');
-    resize();
-    loadPage('rocket');
-  }, 680);
-}
+/* Mobile colors */
+document.getElementById('mobColors')?.addEventListener('click',e=>{
+  const s=e.target.closest('.swatch');
+  if(s&&s.dataset.c)pickColor(s.dataset.c);
+});
+document.getElementById('mobCustomColor')?.addEventListener('input',e=>{
+  activeColor=e.target.value;
+  document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('on'));
+});
+
+/* File input */
+fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleUpload(fileInput.files[0]);fileInput.value='';});
 
 /* ── Toast ── */
 let toastTimer;
-function toast(msg) {
-  toastEl.textContent = msg;
-  toastEl.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toastEl.classList.remove('show'),2400);}
+
+/* ── Splash → App ── */
+function enterApp(){
+  document.getElementById('splash').classList.add('leaving');
+  setTimeout(()=>{
+    document.getElementById('splash').style.display='none';
+    document.getElementById('app').classList.add('visible');
+    resize();
+    buildPageBar('67');
+  },680);
 }
 
 /* ── Init ── */
