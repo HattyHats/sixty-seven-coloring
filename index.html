@@ -316,48 +316,149 @@
     font-family:'Fredoka One',cursive; font-size:.85rem; color:#555;
   }
 
-  /* ── MOBILE BOTTOM BAR ── */
-  .mob-bar { display:none; flex-direction:column; background:#fff; border-top:3px solid var(--border); box-shadow:0 -4px 20px rgba(0,0,0,.12); z-index:50; flex-shrink:0; }
-  .mob-tools { display:flex; align-items:center; justify-content:space-around; padding:6px 4px; gap:4px; overflow-x:auto; scrollbar-width:none; }
+  /* ═══════════════════════════════════════════════
+     MOBILE BOTTOM BAR — redesigned for kids
+     Always visible: colors on top, tools below.
+     No drawer, no scrolling needed.
+  ═══════════════════════════════════════════════ */
+  .mob-bar {
+    display:none;
+    flex-direction:column;
+    background:#fff;
+    border-top:3px solid var(--border);
+    box-shadow:0 -4px 20px rgba(0,0,0,.13);
+    z-index:50;
+    flex-shrink:0;
+  }
+
+  /* ── Row 1: Color swatches — horizontally scrollable ── */
+  .mob-color-strip {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 12px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+    background:#fafafa;
+    border-bottom:2px solid var(--border);
+  }
+  .mob-color-strip::-webkit-scrollbar { display:none; }
+
+  /* Big round color swatches for easy tapping */
+  .mob-color-strip .swatch {
+    width:46px; height:46px;
+    flex-shrink:0;
+    border-radius:50%;
+    border:4px solid #fff;
+    cursor:pointer;
+    box-shadow:0 2px 8px rgba(0,0,0,.18);
+    transition:transform .13s, border-color .13s, box-shadow .13s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mob-color-strip .swatch:active { transform:scale(.88); }
+  .mob-color-strip .swatch.on {
+    border-color:#111;
+    transform:scale(1.2);
+    box-shadow:0 0 0 3px rgba(0,0,0,.25), 0 3px 10px rgba(0,0,0,.2);
+  }
+  .mob-custom-color {
+    width:46px!important; height:46px!important;
+    border-radius:50%!important;
+    border:4px solid #fff!important;
+    background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red)!important;
+    appearance:none; -webkit-appearance:none; overflow:hidden;
+    flex-shrink:0; cursor:pointer;
+    box-shadow:0 2px 8px rgba(0,0,0,.18);
+  }
+
+  /* ── Row 2: brush size dots strip ── */
+  .mob-brush-strip {
+    display:flex;
+    align-items:center;
+    gap:0;
+    padding:6px 12px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-width:none;
+    background:#f5f5f5;
+    border-bottom:2px solid var(--border);
+    gap:14px;
+  }
+  .mob-brush-strip::-webkit-scrollbar { display:none; }
+  .mob-brush-strip-lbl {
+    font-family:'Fredoka One',cursive; font-size:.65rem;
+    color:#bbb; text-transform:uppercase; letter-spacing:1px;
+    flex-shrink:0; margin-right:4px;
+  }
+  .bdot {
+    border-radius:50%; background:#444; border:3px solid #ddd;
+    cursor:pointer; flex-shrink:0;
+    transition:border-color .13s, transform .13s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .bdot.active { border-color:#4d96ff; transform:scale(1.22); }
+  .bdot:active  { transform:scale(.86); }
+
+  /* ── Row 3: action tools ── */
+  .mob-tools {
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    padding:6px 8px;
+    gap:4px;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
   .mob-tools::-webkit-scrollbar { display:none; }
   .mob-btn {
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    min-width:52px; height:56px; border-radius:14px; background:#f5f5f5;
-    border:3px solid transparent; font-size:1.5rem; gap:1px; cursor:pointer; flex-shrink:0;
-    transition:transform .13s,background .13s,border-color .13s; -webkit-tap-highlight-color:transparent;
+    min-width:54px; height:56px; border-radius:14px; background:#f5f5f5;
+    border:3px solid transparent; font-size:1.5rem; gap:2px; cursor:pointer; flex-shrink:0;
+    transition:transform .13s, background .13s, border-color .13s;
+    -webkit-tap-highlight-color:transparent;
   }
-  .mob-btn span { font-family:'Fredoka One',cursive; font-size:.6rem; color:#888; line-height:1; }
+  .mob-btn span { font-family:'Fredoka One',cursive; font-size:.58rem; color:#888; line-height:1; }
   .mob-btn:active { transform:scale(.91); }
   .mob-btn.af { border-color:#4d96ff; background:#e8f2ff; }
   .mob-btn.ad { border-color:#6bcb77; background:#e8f7ea; }
   .mob-btn.ae { border-color:#ff6b6b; background:#ffe8e8; }
-  .mob-toggle { background:linear-gradient(135deg,#ff6b6b,#ffd93d); border:none!important; }
-  .mob-toggle span { color:#fff!important; }
-  .mob-drawer { display:none; flex-direction:column; gap:12px; padding:12px 14px 16px; background:#fafafa; border-top:2px solid var(--border); animation:drawerIn .2s ease; }
-  .mob-drawer.open { display:flex; }
-  @keyframes drawerIn { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
-  .mob-section-lbl { font-family:'Fredoka One',cursive; font-size:.7rem; color:#aaa; text-transform:uppercase; letter-spacing:1px; margin-right:8px; }
-  .mob-brush-row { display:flex; align-items:center; gap:8px; }
-  .mob-brush-dots { display:flex; align-items:center; gap:12px; }
-  .bdot { border-radius:50%; background:#444; border:3px solid #ddd; cursor:pointer; flex-shrink:0; transition:border-color .13s,transform .13s; -webkit-tap-highlight-color:transparent; }
-  .bdot.active { border-color:#4d96ff; transform:scale(1.22); }
-  .bdot:active { transform:scale(.86); }
-  .mob-colors { display:flex; flex-wrap:wrap; gap:10px; }
-  .mob-colors .swatch { width:46px; height:46px; }
-  .mob-custom-color { width:46px!important; height:46px!important; background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red)!important; border:3.5px solid #fff!important; appearance:none; -webkit-appearance:none; overflow:hidden; }
-  .mob-zoom-btn { width:50px; height:50px; border-radius:50%; background:#f0f0f0; border:2px solid var(--border); font-family:'Fredoka One',cursive; font-size:1.5rem; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:transform .12s,background .12s; }
-  .mob-zoom-btn:active { transform:scale(.9); background:#e0e0e0; }
 
-  /* Mobile background thumbnails */
+  /* ── Extras row: zoom + bg (compact, under tools) ── */
+  .mob-extras {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:6px 12px 8px;
+    background:#fafafa;
+    border-top:2px solid var(--border);
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .mob-extras::-webkit-scrollbar { display:none; }
+  .mob-extra-btn {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    min-width:48px; height:48px; border-radius:12px;
+    background:#f0f0f0; border:2px solid var(--border);
+    font-size:1.2rem; gap:1px; cursor:pointer; flex-shrink:0;
+    transition:transform .12s, background .12s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mob-extra-btn span { font-family:'Fredoka One',cursive; font-size:.52rem; color:#999; line-height:1; }
+  .mob-extra-btn:active { transform:scale(.9); background:#e0e0e0; }
+
+  /* Mobile bg thumbnails (now in extras row) */
   .mob-bg-thumb {
-    width:50px; height:50px; border-radius:10px;
+    width:48px; height:48px; border-radius:10px;
     border:3px solid var(--border); overflow:hidden; cursor:pointer;
     transition:border-color .13s, transform .13s;
     -webkit-tap-highlight-color:transparent; flex-shrink:0;
   }
   .mob-bg-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
   .mob-bg-thumb.active { border-color:#4d96ff; transform:scale(1.1); }
-  .mob-bg-thumb:active { transform:scale(.9); }
+  .mob-bg-thumb:active  { transform:scale(.9); }
 
   /* ── TOAST ── */
   #toast { position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(80px); background:#3d2b1f; color:#fff; font-family:'Fredoka One',cursive; font-size:1rem; padding:10px 26px; border-radius:40px; box-shadow:0 6px 20px rgba(0,0,0,.2); pointer-events:none; z-index:300; transition:transform .3s cubic-bezier(.34,1.56,.64,1); white-space:nowrap; }
@@ -367,7 +468,7 @@
   @media (max-width:700px) {
     :root { --hdr:54px; --tbw:0px; }
     .toolbar { display:none; }
-    .mob-bar { display:flex; }
+    .mob-bar  { display:flex; }
     .zoom-btns { display:none; }
     .cat-tabs { gap:4px; }
     .cat-tab { padding:5px 10px; font-size:.78rem; }
@@ -509,10 +610,37 @@
     </div>
   </div>
 
-  <!-- ── MOBILE BOTTOM DRAWER ── -->
+  <!-- ── MOBILE BOTTOM BAR — always visible, no drawer needed ── -->
   <div class="mob-bar" id="mobBar">
 
-    <!-- Tool strip (always visible) -->
+    <!-- ROW 1: Color swatches — horizontally scrollable, always visible -->
+    <div class="mob-color-strip" id="mobColors">
+      <div class="swatch on"  style="background:#e63946" data-c="#e63946"></div>
+      <div class="swatch"     style="background:#f4701b" data-c="#f4701b"></div>
+      <div class="swatch"     style="background:#ffd93d" data-c="#ffd93d"></div>
+      <div class="swatch"     style="background:#57cc04" data-c="#57cc04"></div>
+      <div class="swatch"     style="background:#06d6a0" data-c="#06d6a0"></div>
+      <div class="swatch"     style="background:#4d96ff" data-c="#4d96ff"></div>
+      <div class="swatch"     style="background:#9b5de5" data-c="#9b5de5"></div>
+      <div class="swatch"     style="background:#f15bb5" data-c="#f15bb5"></div>
+      <div class="swatch"     style="background:#a0522d" data-c="#a0522d"></div>
+      <div class="swatch"     style="background:#888888" data-c="#888888"></div>
+      <div class="swatch"     style="background:#ffffff;border-color:#ccc" data-c="#ffffff"></div>
+      <div class="swatch"     style="background:#111111" data-c="#111111"></div>
+      <input type="color" id="mobCustomColor" value="#e63946" title="Any color" class="swatch mob-custom-color"/>
+    </div>
+
+    <!-- ROW 2: Brush size dots — always visible -->
+    <div class="mob-brush-strip" id="mobBrushDots">
+      <span class="mob-brush-strip-lbl">Brush</span>
+      <button class="bdot" data-px="4"  style="width:12px;height:12px"></button>
+      <button class="bdot" data-px="10" style="width:18px;height:18px"></button>
+      <button class="bdot active" data-px="18" style="width:26px;height:26px"></button>
+      <button class="bdot" data-px="28" style="width:36px;height:36px"></button>
+      <button class="bdot" data-px="40" style="width:48px;height:48px"></button>
+    </div>
+
+    <!-- ROW 3: Tool buttons — always visible -->
     <div class="mob-tools">
       <button class="mob-btn af" id="mFill"  >🪣<span>Fill</span></button>
       <button class="mob-btn"    id="mDraw"  >✏️<span>Draw</span></button>
@@ -520,63 +648,22 @@
       <button class="mob-btn"    id="mUndo"  >↩️<span>Undo</span></button>
       <button class="mob-btn"    id="mClear" >🗑️<span>Clear</span></button>
       <button class="mob-btn"    id="mSave"  >💾<span>Save</span></button>
-      <!-- Toggle drawer open/close -->
-      <button class="mob-btn mob-toggle" id="mobToggle">🎨<span>More</span></button>
     </div>
 
-    <!-- Expandable drawer: brush + colors -->
-    <div class="mob-drawer" id="mobDrawer">
-      <!-- Brush size with big visible dots -->
-      <div class="mob-brush-row">
-        <span class="mob-section-lbl">Brush</span>
-        <div class="mob-brush-dots" id="mobBrushDots">
-          <button class="bdot" data-px="6"  style="width:14px;height:14px"></button>
-          <button class="bdot" data-px="12" style="width:20px;height:20px"></button>
-          <button class="bdot active" data-px="18" style="width:28px;height:28px"></button>
-          <button class="bdot" data-px="28" style="width:38px;height:38px"></button>
-          <button class="bdot" data-px="40" style="width:50px;height:50px"></button>
-        </div>
+    <!-- ROW 4: Zoom + Background — compact extras row -->
+    <div class="mob-extras">
+      <button class="mob-extra-btn" id="mZoomOut">−<span>Zoom</span></button>
+      <button class="mob-extra-btn" id="mZoomFit">⌖<span>Fit</span></button>
+      <button class="mob-extra-btn" id="mZoomIn" >+<span>Zoom</span></button>
+      <div class="mob-bg-thumb active" data-bg="bubbles" title="Bubbles">
+        <img src="bubbles.gif" alt="Bubbles"/>
       </div>
-      <!-- Color palette — big round buttons, 2 rows -->
-      <div class="mob-section-lbl">Colors</div>
-      <div class="mob-colors" id="mobColors">
-        <div class="swatch on"  style="background:#e63946" data-c="#e63946"></div>
-        <div class="swatch"     style="background:#f4701b" data-c="#f4701b"></div>
-        <div class="swatch"     style="background:#ffd93d" data-c="#ffd93d"></div>
-        <div class="swatch"     style="background:#57cc04" data-c="#57cc04"></div>
-        <div class="swatch"     style="background:#06d6a0" data-c="#06d6a0"></div>
-        <div class="swatch"     style="background:#4d96ff" data-c="#4d96ff"></div>
-        <div class="swatch"     style="background:#9b5de5" data-c="#9b5de5"></div>
-        <div class="swatch"     style="background:#f15bb5" data-c="#f15bb5"></div>
-        <div class="swatch"     style="background:#a0522d" data-c="#a0522d"></div>
-        <div class="swatch"     style="background:#888888" data-c="#888888"></div>
-        <div class="swatch"     style="background:#ffffff;border-color:#ccc" data-c="#ffffff"></div>
-        <div class="swatch"     style="background:#111111" data-c="#111111"></div>
-        <input type="color" id="mobCustomColor" value="#e63946" title="Any color" class="swatch mob-custom-color"/>
+      <div class="mob-bg-thumb" data-bg="bubbles1" title="Bubbles 2">
+        <img src="bubbles1.gif" alt="Bubbles 2"/>
       </div>
-      <!-- Zoom row -->
-      <div class="mob-brush-row">
-        <span class="mob-section-lbl">Zoom</span>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button class="mob-zoom-btn" id="mZoomOut">−</button>
-          <button class="mob-zoom-btn" id="mZoomFit">Fit</button>
-          <button class="mob-zoom-btn" id="mZoomIn">+</button>
-        </div>
-      </div>
-      <!-- Background row -->
-      <div class="mob-brush-row">
-        <span class="mob-section-lbl">BG</span>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <div class="mob-bg-thumb active" data-bg="bubbles" title="Bubbles">
-            <img src="bubbles.gif" alt="Bubbles"/>
-          </div>
-          <div class="mob-bg-thumb" data-bg="bubbles1" title="Bubbles 2">
-            <img src="bubbles1.gif" alt="Bubbles 2"/>
-          </div>
-          <!-- ADD MORE: copy a mob-bg-thumb block here -->
-        </div>
-      </div>
+      <!-- ADD MORE backgrounds: copy the mob-bg-thumb block above -->
     </div>
+
   </div>
 
   <input type="file" id="fileInput" accept="image/*,.svg"/>
@@ -1131,30 +1218,23 @@ document.getElementById('mUndo')?.addEventListener('click',   undo);
 document.getElementById('mClear')?.addEventListener('click',  ()=>{if(confirm('Clear all?'))clearColors();});
 document.getElementById('mSave')?.addEventListener('click',   saveImage);
 
-/* Mobile drawer toggle */
-const mobDrawer=document.getElementById('mobDrawer');
-document.getElementById('mobToggle')?.addEventListener('click',()=>{
-  mobDrawer.classList.toggle('open');
-  document.getElementById('mobToggle').textContent=mobDrawer.classList.contains('open')?'✕':'🎨';
-  document.querySelectorAll('#mobToggle span').forEach(s=>s.textContent=mobDrawer.classList.contains('open')?'Close':'More');
-});
-
-/* Mobile brush dots */
-document.getElementById('mobBrushDots')?.addEventListener('click',e=>{
-  const dot=e.target.closest('.bdot');if(!dot)return;
-  brushPx=parseInt(dot.dataset.px);
-  document.querySelectorAll('.bdot').forEach(d=>d.classList.remove('active'));
+/* Mobile brush dots — single delegate on the strip */
+document.getElementById('mobBrushDots')?.addEventListener('click', e => {
+  const dot = e.target.closest('.bdot');
+  if (!dot) return;
+  brushPx = parseInt(dot.dataset.px);
+  document.querySelectorAll('.bdot').forEach(d => d.classList.remove('active'));
   dot.classList.add('active');
 });
 
-/* Mobile colors */
-document.getElementById('mobColors')?.addEventListener('click',e=>{
-  const s=e.target.closest('.swatch');
-  if(s&&s.dataset.c)pickColor(s.dataset.c);
+/* Mobile color strip */
+document.getElementById('mobColors')?.addEventListener('click', e => {
+  const s = e.target.closest('.swatch');
+  if (s && s.dataset.c) pickColor(s.dataset.c);
 });
-document.getElementById('mobCustomColor')?.addEventListener('input',e=>{
-  activeColor=e.target.value;
-  document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('on'));
+document.getElementById('mobCustomColor')?.addEventListener('input', e => {
+  activeColor = e.target.value;
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('on'));
 });
 
 /* File input */
