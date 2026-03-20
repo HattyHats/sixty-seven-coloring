@@ -244,18 +244,26 @@
   .canvas-area {
     flex:1; min-width:0; min-height:0;
     display:flex; align-items:center; justify-content:center;
-    background: radial-gradient(circle at 20% 40%,rgba(255,107,107,.07) 0%,transparent 55%),
-                radial-gradient(circle at 78% 70%,rgba(77,150,255,.07) 0%,transparent 55%), #fff4e6;
     overflow:hidden; position:relative;
+    /* bubbles.gif tiles as the background */
+    background-image: url('bubbles.gif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
-  .zoom-wrap { transform-origin:center center; transition:transform .18s ease; touch-action:none; user-select:none; }
-  #mainCanvas { border-radius:var(--radius); box-shadow:0 6px 36px rgba(0,0,0,.13),0 2px 8px rgba(0,0,0,.08); cursor:crosshair; display:block; touch-action:none; }
+  /* Subtle dark vignette so canvas pops off the gif */
+  .canvas-area::before {
+    content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.18) 100%);
+  }
+  .zoom-wrap { position:relative; z-index:1; transform-origin:center center; touch-action:none; user-select:none; will-change:transform; }
+  #mainCanvas { border-radius:var(--radius); box-shadow:0 8px 40px rgba(0,0,0,0.22),0 2px 8px rgba(0,0,0,0.12); cursor:crosshair; display:block; touch-action:none; }
   .zoom-btns { position:absolute; bottom:14px; right:14px; display:flex; flex-direction:column; gap:6px; z-index:12; }
   .zoom-fab {
-    width:40px; height:40px; border-radius:50%;
+    width:44px; height:44px; border-radius:50%;
     background:rgba(255,255,255,.92); border:2px solid var(--border);
-    font-size:1.25rem; font-family:'Fredoka One',cursive; cursor:pointer;
-    box-shadow:0 3px 10px rgba(0,0,0,.15); display:flex; align-items:center; justify-content:center;
+    font-size:1.3rem; font-family:'Fredoka One',cursive; cursor:pointer;
+    box-shadow:0 3px 10px rgba(0,0,0,.18); display:flex; align-items:center; justify-content:center;
     transition:transform .13s,background .13s; -webkit-tap-highlight-color:transparent;
   }
   .zoom-fab:hover { transform:scale(1.13); background:#fff; }
@@ -568,14 +576,7 @@ let outlineLayer = null;
 let activeCat    = '67';
 let activePage   = null;
 
-/* Zoom/pan state */
-let zoomScale = 1;
-let panX = 0, panY = 0;
-let isPanning = false, panStartX = 0, panStartY = 0;
-let pinchStartDist = 0, pinchStartScale = 1;
-const MIN_ZOOM = 0.4, MAX_ZOOM = 5;
-
-/* ── DOM ── */
+/* ── DOM refs ── */
 const mainCanvas = document.getElementById('mainCanvas');
 const ctx        = mainCanvas.getContext('2d', { willReadFrequently: true });
 const canvasArea = document.getElementById('canvasArea');
@@ -588,7 +589,6 @@ const brushInput = document.getElementById('brushSize');
 const brushLbl   = document.getElementById('brushLbl');
 const customClr  = document.getElementById('customColor');
 const fileInput  = document.getElementById('fileInput');
-
 const outlineTmp    = document.createElement('canvas');
 const outlineTmpCtx = outlineTmp.getContext('2d');
 
@@ -599,7 +599,6 @@ function resize() {
   const pad = 20;
   const sc  = Math.min((ar.width-pad*2)/CW, (ar.height-pad*2)/CH, 2);
   const dw  = Math.round(CW*sc), dh = Math.round(CH*sc);
-  const prev = colorLayer ? colorLayer : null;
   mainCanvas.width = CW; mainCanvas.height = CH;
   mainCanvas.style.width = dw+'px'; mainCanvas.style.height = dh+'px';
   if (!colorLayer) colorLayer = ctx.createImageData(CW,CH);
@@ -607,83 +606,145 @@ function resize() {
 }
 const ro = new ResizeObserver(resize);
 ro.observe(canvasArea);
+/*
+  Single source of truth: zoomScale, panX, panY.
+  One rAF loop applies the transform — no competing listeners.
+  Touch: 1 finger = draw/fill  |  2 fingers = pinch-zoom + pan
+*/
+let zoomScale = 1, panX = 0, panY = 0;
+const MIN_ZOOM = 0.5, MAX_ZOOM = 6;
+let rafPending = false;
 
-/* ── Zoom/Pan ── */
 function applyTransform() {
-  zoomWrap.style.transform = `translate(${panX}px,${panY}px) scale(${zoomScale})`;
+  if (rafPending) return;
+  rafPending = true;
+  requestAnimationFrame(() => {
+    rafPending = false;
+    zoomWrap.style.transform = `translate(${panX}px,${panY}px) scale(${zoomScale})`;
+  });
 }
-function zoomBy(delta, cx, cy) {
-  const ar = canvasArea.getBoundingClientRect();
-  const ox = (cx ?? ar.width/2)  - ar.left;
-  const oy = (cy ?? ar.height/2) - ar.top;
-  const newScale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoomScale * delta));
+
+function clampPan() {
+  /* Optional: keep canvas loosely within bounds when zoomed */
+  const ar  = canvasArea.getBoundingClientRect();
+  const cw  = mainCanvas.offsetWidth  * zoomScale;
+  const ch  = mainCanvas.offsetHeight * zoomScale;
+  const maxX = Math.max(0, (cw  - ar.width)  / 2 + ar.width  * 0.4);
+  const maxY = Math.max(0, (ch  - ar.height) / 2 + ar.height * 0.4);
+  panX = Math.min(maxX, Math.max(-maxX, panX));
+  panY = Math.min(maxY, Math.max(-maxY, panY));
+}
+
+function zoomAt(newScale, originX, originY) {
+  /* originX/Y are coordinates relative to canvasArea */
+  newScale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, newScale));
   const ratio = newScale / zoomScale;
-  panX = ox + (panX - ox) * ratio;
-  panY = oy + (panY - oy) * ratio;
+  panX  = originX + (panX - originX) * ratio;
+  panY  = originY + (panY - originY) * ratio;
   zoomScale = newScale;
+  clampPan();
   applyTransform();
 }
+
 function zoomFit() {
   zoomScale = 1; panX = 0; panY = 0; applyTransform();
 }
 
-/* Desktop zoom buttons */
-document.getElementById('deskZoomIn').addEventListener('click',  () => zoomBy(1.3));
-document.getElementById('deskZoomOut').addEventListener('click', () => zoomBy(0.77));
-document.getElementById('deskZoomFit').addEventListener('click', zoomFit);
-document.getElementById('btnZoomIn').addEventListener('click',   () => zoomBy(1.3));
-document.getElementById('btnZoomOut').addEventListener('click',  () => zoomBy(0.77));
-document.getElementById('btnZoomReset').addEventListener('click',zoomFit);
-document.getElementById('mZoomIn').addEventListener('click',     () => zoomBy(1.3));
-document.getElementById('mZoomOut').addEventListener('click',    () => zoomBy(0.77));
-document.getElementById('mZoomFit').addEventListener('click',    zoomFit);
+/* Button zoom — zoom toward center */
+function centerZoom(delta) {
+  const ar = canvasArea.getBoundingClientRect();
+  zoomAt(zoomScale * delta, ar.width / 2, ar.height / 2);
+}
+
+/* Zoom buttons — desktop sidebar */
+document.getElementById('deskZoomIn').addEventListener('click',   () => centerZoom(1.35));
+document.getElementById('deskZoomOut').addEventListener('click',  () => centerZoom(0.74));
+document.getElementById('deskZoomFit').addEventListener('click',  zoomFit);
+document.getElementById('btnZoomIn').addEventListener('click',    () => centerZoom(1.35));
+document.getElementById('btnZoomOut').addEventListener('click',   () => centerZoom(0.74));
+document.getElementById('btnZoomReset').addEventListener('click', zoomFit);
+/* Mobile drawer zoom */
+document.getElementById('mZoomIn').addEventListener('click',  () => centerZoom(1.35));
+document.getElementById('mZoomOut').addEventListener('click', () => centerZoom(0.74));
+document.getElementById('mZoomFit').addEventListener('click', zoomFit);
 
 /* Mouse wheel zoom */
 canvasArea.addEventListener('wheel', e => {
   e.preventDefault();
-  zoomBy(e.deltaY < 0 ? 1.12 : 0.89, e.clientX, e.clientY);
+  const ar = canvasArea.getBoundingClientRect();
+  zoomAt(zoomScale * (e.deltaY < 0 ? 1.1 : 0.91), e.clientX - ar.left, e.clientY - ar.top);
 }, { passive: false });
 
-/* Pinch-to-zoom on touch */
-canvasArea.addEventListener('touchstart', e => {
-  if (e.touches.length === 2) {
-    pinchStartDist  = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-    pinchStartScale = zoomScale;
-    e.preventDefault();
-  }
-}, { passive: false });
-canvasArea.addEventListener('touchmove', e => {
-  if (e.touches.length === 2) {
-    e.preventDefault();
-    const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-    const newScale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, pinchStartScale * (dist / pinchStartDist)));
-    const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-    const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+/* ── Unified touch handler ── */
+/*
+  Tracks up to 2 pointers. 1 pointer = draw. 2 pointers = pinch+pan.
+  Storing initial state on each 2-finger start prevents jumps.
+*/
+const touches = new Map(); // pointerId → {x,y}
+
+function midpoint() {
+  const pts = [...touches.values()];
+  return { x:(pts[0].x+pts[1].x)/2, y:(pts[0].y+pts[1].y)/2 };
+}
+function pinchDist() {
+  const pts = [...touches.values()];
+  return Math.hypot(pts[0].x-pts[1].x, pts[0].y-pts[1].y);
+}
+
+let gestureBase = null; // captured when 2nd finger lands
+
+canvasArea.addEventListener('pointerdown', e => {
+  touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (touches.size === 2) {
+    /* 2nd finger just landed — capture baseline for this gesture */
     const ar = canvasArea.getBoundingClientRect();
-    const ratio = newScale / zoomScale;
-    panX = (midX-ar.left) + (panX - (midX-ar.left)) * ratio;
-    panY = (midY-ar.top)  + (panY - (midY-ar.top))  * ratio;
+    const mid = midpoint();
+    gestureBase = {
+      dist:  pinchDist(),
+      scale: zoomScale,
+      panX, panY,
+      midX:  mid.x - ar.left,
+      midY:  mid.y - ar.top,
+    };
+    isDrawing = false; /* cancel any draw in progress */
+    e.preventDefault();
+  }
+}, { passive: false });
+
+canvasArea.addEventListener('pointermove', e => {
+  if (!touches.has(e.pointerId)) return;
+  touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+  if (touches.size === 2 && gestureBase) {
+    e.preventDefault();
+    const ar   = canvasArea.getBoundingClientRect();
+    const dist = pinchDist();
+    const mid  = midpoint();
+
+    /* Scale relative to gesture start */
+    const newScale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM,
+      gestureBase.scale * (dist / gestureBase.dist)));
+
+    /* Pan = how much the midpoint moved since gesture start */
+    const midX = mid.x - ar.left;
+    const midY = mid.y - ar.top;
+    const panDX = midX - gestureBase.midX;
+    const panDY = midY - gestureBase.midY;
+
+    /* Scale around the gesture midpoint */
+    const ratio = newScale / gestureBase.scale;
+    panX = gestureBase.midX + (gestureBase.panX - gestureBase.midX) * ratio + panDX;
+    panY = gestureBase.midY + (gestureBase.panY - gestureBase.midY) * ratio + panDY;
     zoomScale = newScale;
+    clampPan();
     applyTransform();
   }
 }, { passive: false });
 
-/* Two-finger pan (when zoomed in) — separate from draw */
-let twoFingerPanStart = null;
-canvasArea.addEventListener('touchstart', e => {
-  if (e.touches.length === 2) {
-    twoFingerPanStart = { px: panX, py: panY, mx: (e.touches[0].clientX+e.touches[1].clientX)/2, my: (e.touches[0].clientY+e.touches[1].clientY)/2 };
-  } else { twoFingerPanStart = null; }
-}, { passive: false });
-canvasArea.addEventListener('touchmove', e => {
-  if (e.touches.length === 2 && twoFingerPanStart) {
-    const mx = (e.touches[0].clientX+e.touches[1].clientX)/2;
-    const my = (e.touches[0].clientY+e.touches[1].clientY)/2;
-    panX = twoFingerPanStart.px + (mx - twoFingerPanStart.mx);
-    panY = twoFingerPanStart.py + (my - twoFingerPanStart.my);
-    applyTransform();
-  }
-}, { passive: false });
+canvasArea.addEventListener('pointerup',     e => { touches.delete(e.pointerId); if(touches.size < 2) gestureBase = null; });
+canvasArea.addEventListener('pointercancel', e => { touches.delete(e.pointerId); if(touches.size < 2) gestureBase = null; });
+/* Prevent default iOS rubber-band during pinch */
+canvasArea.addEventListener('touchmove', e => { if(e.touches.length>1) e.preventDefault(); }, { passive:false });
 
 /* ── Composite ── */
 function composite() {
