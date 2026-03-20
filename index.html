@@ -237,11 +237,12 @@
     flex:1; min-width:0; min-height:0;
     display:flex; align-items:center; justify-content:center;
     overflow:hidden; position:relative;
-    background-image: url('bubbles.gif');
+    /* default = fast-loading still JPEG — overridden by setBackground() */
+    background-image: url('bubbles.jpeg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    cursor: grab;  /* shows hand cursor on the background = draggable */
+    cursor: grab;
   }
   .canvas-area:active { cursor: grabbing; }
   /* Vignette so canvas pops off background */
@@ -285,6 +286,11 @@
     font-family:'Fredoka One',cursive; font-size:.75rem; color:#bbb;
     text-transform:uppercase; letter-spacing:1px; text-align:center;
     border-bottom:2px solid var(--border); padding-bottom:6px; margin-bottom:2px;
+  }
+  .picker-section-lbl {
+    font-family:'Fredoka One',cursive; font-size:.65rem; color:#4d96ff;
+    text-transform:uppercase; letter-spacing:1px;
+    padding:6px 4px 2px; margin-top:2px;
   }
   .bg-option {
     display:flex; align-items:center; gap:10px;
@@ -566,17 +572,28 @@
       <!-- Background picker panel (floats above zoom buttons) -->
       <div id="bgPicker">
         <div class="picker-title">Background</div>
-        <div class="bg-option active" data-bg="bubbles">
+
+        <div class="picker-section-lbl">🖼️ Still</div>
+        <div class="bg-option active" data-bg="bubbles_jpg">
+          <img class="bg-thumb" src="bubbles.jpeg" alt="Bubbles"/>
+          <span class="bg-option-label">Bubbles</span>
+        </div>
+        <div class="bg-option" data-bg="bubbles1_jpg">
+          <img class="bg-thumb" src="bubbles1.jpeg" alt="Bubbles 1"/>
+          <span class="bg-option-label">Bubbles 1</span>
+        </div>
+        <!-- ADD MORE STILL: copy a bg-option block here, add to BACKGROUNDS in JS -->
+
+        <div class="picker-section-lbl">✨ Moving</div>
+        <div class="bg-option" data-bg="bubbles_gif">
           <img class="bg-thumb" src="bubbles.gif" alt="Bubbles"/>
           <span class="bg-option-label">Bubbles</span>
         </div>
-        <div class="bg-option" data-bg="bubbles1">
-          <img class="bg-thumb" src="bubbles1.gif" alt="Bubbles 2"/>
-          <span class="bg-option-label">Bubbles 2</span>
+        <div class="bg-option" data-bg="bubbles1_gif">
+          <img class="bg-thumb" src="bubbles1.gif" alt="Bubbles 1"/>
+          <span class="bg-option-label">Bubbles 1</span>
         </div>
-        <!-- ── ADD MORE BACKGROUNDS HERE ──
-             Copy the block above and change data-bg, src, and label.
-             Then add a matching entry in the BACKGROUNDS object in JS. -->
+        <!-- ADD MORE MOVING: copy a bg-option block here, add to BACKGROUNDS in JS -->
       </div>
     </div>
   </div>
@@ -624,9 +641,11 @@
       <button class="mob-btn" id="mZoomFit">⌖<span>Fit</span></button>
       <button class="mob-btn" id="mZoomIn" >+<span>Zoom</span></button>
       <div class="mob-divider"></div>
-      <div class="mob-bg-thumb active" data-bg="bubbles" title="Bubbles"><img src="bubbles.gif" alt=""/></div>
-      <div class="mob-bg-thumb" data-bg="bubbles1" title="Bubbles 2"><img src="bubbles1.gif" alt=""/></div>
-      <!-- ADD MORE backgrounds here -->
+      <div class="mob-bg-thumb active" data-bg="bubbles_jpg" title="Still: Bubbles"><img src="bubbles.jpeg" alt=""/></div>
+      <div class="mob-bg-thumb" data-bg="bubbles1_jpg" title="Still: Bubbles 1"><img src="bubbles1.jpeg" alt=""/></div>
+      <div class="mob-bg-thumb" data-bg="bubbles_gif" title="Moving: Bubbles"><img src="bubbles.gif" alt=""/></div>
+      <div class="mob-bg-thumb" data-bg="bubbles1_gif" title="Moving: Bubbles 1"><img src="bubbles1.gif" alt=""/></div>
+      <!-- ADD MORE bg thumbs here -->
     </div>
 
   </div>
@@ -1330,21 +1349,24 @@ function enterApp(){
 /* ── Background switcher ── */
 /*
   TO ADD A NEW BACKGROUND:
-  1. Add a new entry to BACKGROUNDS below with a unique key, the gif/image src, and a label.
-  2. Add a matching .bg-option block inside #bgPicker in the HTML.
-  3. Add a matching .mob-bg-thumb block inside the mobile drawer BG row.
-  That's it — no other changes needed.
+  1. Add entry to BACKGROUNDS below (still or moving section).
+  2. Add a .bg-option block in the correct section inside #bgPicker HTML.
+  3. Add a .mob-bg-thumb in the mobile tools row HTML.
 */
 const BACKGROUNDS = {
-  bubbles:  { src: 'bubbles.gif',  label: 'Bubbles'   },
-  bubbles1: { src: 'bubbles1.gif', label: 'Bubbles 2' },
-  /* ADD MORE HERE:
-  stars:   { src: 'stars.gif',   label: 'Stars'  },
-  confetti:{ src: 'confetti.gif',label: 'Confetti' },
-  */
+  /* ── Still (JPEG — fast load, default) ── */
+  bubbles_jpg:  { src: 'bubbles.jpeg',  label: 'Bubbles'   },
+  bubbles1_jpg: { src: 'bubbles1.jpeg', label: 'Bubbles 1' },
+  /* ADD MORE STILL: myBg: { src: 'my-bg.jpeg', label: 'My BG' }, */
+
+  /* ── Moving (GIF — slower, load only when chosen) ── */
+  bubbles_gif:  { src: 'bubbles.gif',  label: 'Bubbles (Moving)'   },
+  bubbles1_gif: { src: 'bubbles1.gif', label: 'Bubbles 1 (Moving)' },
+  /* ADD MORE MOVING: myGif: { src: 'my-bg.gif', label: 'My GIF' }, */
 };
 
-let activeBg = 'bubbles';
+/* Default = still JPEG — loads instantly on every device */
+let activeBg = 'bubbles_jpg';
 
 function setBackground(key) {
   const bg = BACKGROUNDS[key];
