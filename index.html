@@ -245,19 +245,26 @@
     flex:1; min-width:0; min-height:0;
     display:flex; align-items:center; justify-content:center;
     overflow:hidden; position:relative;
-    /* bubbles.gif tiles as the background */
+    /* default background — overridden by JS via data-bg attribute */
     background-image: url('bubbles.gif');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    transition: background-image 0.3s;
   }
-  /* Subtle dark vignette so canvas pops off the gif */
+  /* Vignette so canvas pops off background */
   .canvas-area::before {
     content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
-    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.18) 100%);
+    background: radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.22) 100%);
   }
   .zoom-wrap { position:relative; z-index:1; transform-origin:center center; touch-action:none; user-select:none; will-change:transform; }
-  #mainCanvas { border-radius:var(--radius); box-shadow:0 8px 40px rgba(0,0,0,0.22),0 2px 8px rgba(0,0,0,0.12); cursor:crosshair; display:block; touch-action:none; }
+  /* Canvas itself always has a white background */
+  #mainCanvas {
+    border-radius:var(--radius);
+    box-shadow:0 8px 40px rgba(0,0,0,0.28),0 2px 8px rgba(0,0,0,0.14);
+    cursor:crosshair; display:block; touch-action:none;
+    background:#ffffff;
+  }
   .zoom-btns { position:absolute; bottom:14px; right:14px; display:flex; flex-direction:column; gap:6px; z-index:12; }
   .zoom-fab {
     width:44px; height:44px; border-radius:50%;
@@ -269,6 +276,45 @@
   .zoom-fab:hover { transform:scale(1.13); background:#fff; }
   #loadOvl { position:absolute; inset:0; z-index:10; background:rgba(255,255,255,.9); display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:1.4rem; color:#4d96ff; border-radius:var(--radius); transition:opacity .25s; }
   #loadOvl.gone { opacity:0; pointer-events:none; }
+
+  /* ── BACKGROUND PICKER PANEL ── */
+  #bgPicker {
+    position:absolute; bottom:70px; right:14px;
+    background:#fff; border-radius:16px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.10);
+    padding:12px; z-index:20;
+    display:none; flex-direction:column; gap:8px;
+    min-width:160px;
+    animation:pickerIn .18s ease;
+  }
+  #bgPicker.open { display:flex; }
+  @keyframes pickerIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  #bgPicker .picker-title {
+    font-family:'Fredoka One',cursive; font-size:.75rem; color:#bbb;
+    text-transform:uppercase; letter-spacing:1px; text-align:center;
+    border-bottom:2px solid var(--border); padding-bottom:6px; margin-bottom:2px;
+  }
+  .bg-option {
+    display:flex; align-items:center; gap:10px;
+    padding:6px 8px; border-radius:10px; cursor:pointer;
+    border:2.5px solid transparent;
+    transition:border-color .13s, background .13s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .bg-option:hover { background:#f5f5f5; }
+  .bg-option.active { border-color:#4d96ff; background:#e8f2ff; }
+  .bg-thumb {
+    width:44px; height:44px; border-radius:8px;
+    object-fit:cover; border:2px solid var(--border);
+    flex-shrink:0;
+  }
+  .bg-thumb-solid {
+    width:44px; height:44px; border-radius:8px;
+    flex-shrink:0; border:2px solid var(--border);
+  }
+  .bg-option-label {
+    font-family:'Fredoka One',cursive; font-size:.85rem; color:#555;
+  }
 
   /* ── MOBILE BOTTOM BAR ── */
   .mob-bar { display:none; flex-direction:column; background:#fff; border-top:3px solid var(--border); box-shadow:0 -4px 20px rgba(0,0,0,.12); z-index:50; flex-shrink:0; }
@@ -301,6 +347,17 @@
   .mob-custom-color { width:46px!important; height:46px!important; background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red)!important; border:3.5px solid #fff!important; appearance:none; -webkit-appearance:none; overflow:hidden; }
   .mob-zoom-btn { width:50px; height:50px; border-radius:50%; background:#f0f0f0; border:2px solid var(--border); font-family:'Fredoka One',cursive; font-size:1.5rem; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:transform .12s,background .12s; }
   .mob-zoom-btn:active { transform:scale(.9); background:#e0e0e0; }
+
+  /* Mobile background thumbnails */
+  .mob-bg-thumb {
+    width:50px; height:50px; border-radius:10px;
+    border:3px solid var(--border); overflow:hidden; cursor:pointer;
+    transition:border-color .13s, transform .13s;
+    -webkit-tap-highlight-color:transparent; flex-shrink:0;
+  }
+  .mob-bg-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .mob-bg-thumb.active { border-color:#4d96ff; transform:scale(1.1); }
+  .mob-bg-thumb:active { transform:scale(.9); }
 
   /* ── TOAST ── */
   #toast { position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(80px); background:#3d2b1f; color:#fff; font-family:'Fredoka One',cursive; font-size:1rem; padding:10px 26px; border-radius:40px; box-shadow:0 6px 20px rgba(0,0,0,.2); pointer-events:none; z-index:300; transition:transform .3s cubic-bezier(.34,1.56,.64,1); white-space:nowrap; }
@@ -389,6 +446,9 @@
       <button class="tb-btn" id="btnZoomOut">🔎<span class="lbl">−</span></button>
       <button class="tb-btn" id="btnZoomReset">⌖<span class="lbl">Fit</span></button>
       <div class="tb-div"></div>
+      <div class="tb-label">Background</div>
+      <button class="tb-btn" id="btnBgPicker">🌅<span class="lbl">BG</span></button>
+      <div class="tb-div"></div>
       <div class="tb-label">Brush</div>
       <div class="brush-wrap">
         <input type="range" id="brushSize" min="4" max="40" value="14"/>
@@ -429,6 +489,22 @@
         <button class="zoom-fab" id="deskZoomIn"  title="Zoom in">+</button>
         <button class="zoom-fab" id="deskZoomOut" title="Zoom out">−</button>
         <button class="zoom-fab" id="deskZoomFit" title="Fit">⌖</button>
+      </div>
+
+      <!-- Background picker panel (floats above zoom buttons) -->
+      <div id="bgPicker">
+        <div class="picker-title">Background</div>
+        <div class="bg-option active" data-bg="bubbles">
+          <img class="bg-thumb" src="bubbles.gif" alt="Bubbles"/>
+          <span class="bg-option-label">Bubbles</span>
+        </div>
+        <div class="bg-option" data-bg="bubbles1">
+          <img class="bg-thumb" src="bubbles1.gif" alt="Bubbles 2"/>
+          <span class="bg-option-label">Bubbles 2</span>
+        </div>
+        <!-- ── ADD MORE BACKGROUNDS HERE ──
+             Copy the block above and change data-bg, src, and label.
+             Then add a matching entry in the BACKGROUNDS object in JS. -->
       </div>
     </div>
   </div>
@@ -485,6 +561,19 @@
           <button class="mob-zoom-btn" id="mZoomOut">−</button>
           <button class="mob-zoom-btn" id="mZoomFit">Fit</button>
           <button class="mob-zoom-btn" id="mZoomIn">+</button>
+        </div>
+      </div>
+      <!-- Background row -->
+      <div class="mob-brush-row">
+        <span class="mob-section-lbl">BG</span>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div class="mob-bg-thumb active" data-bg="bubbles" title="Bubbles">
+            <img src="bubbles.gif" alt="Bubbles"/>
+          </div>
+          <div class="mob-bg-thumb" data-bg="bubbles1" title="Bubbles 2">
+            <img src="bubbles1.gif" alt="Bubbles 2"/>
+          </div>
+          <!-- ADD MORE: copy a mob-bg-thumb block here -->
         </div>
       </div>
     </div>
@@ -1091,6 +1180,67 @@ function enterApp(){
     buildPageBar('67');
   },680);
 }
+
+/* ── Background switcher ── */
+/*
+  TO ADD A NEW BACKGROUND:
+  1. Add a new entry to BACKGROUNDS below with a unique key, the gif/image src, and a label.
+  2. Add a matching .bg-option block inside #bgPicker in the HTML.
+  3. Add a matching .mob-bg-thumb block inside the mobile drawer BG row.
+  That's it — no other changes needed.
+*/
+const BACKGROUNDS = {
+  bubbles:  { src: 'bubbles.gif',  label: 'Bubbles'   },
+  bubbles1: { src: 'bubbles1.gif', label: 'Bubbles 2' },
+  /* ADD MORE HERE:
+  stars:   { src: 'stars.gif',   label: 'Stars'  },
+  confetti:{ src: 'confetti.gif',label: 'Confetti' },
+  */
+};
+
+let activeBg = 'bubbles';
+
+function setBackground(key) {
+  const bg = BACKGROUNDS[key];
+  if (!bg) return;
+  activeBg = key;
+
+  /* Apply to canvas area */
+  canvasArea.style.backgroundImage = `url('${bg.src}')`;
+
+  /* Update desktop picker active state */
+  document.querySelectorAll('.bg-option').forEach(el =>
+    el.classList.toggle('active', el.dataset.bg === key));
+
+  /* Update mobile picker active state */
+  document.querySelectorAll('.mob-bg-thumb').forEach(el =>
+    el.classList.toggle('active', el.dataset.bg === key));
+}
+
+/* Desktop bg picker button — toggles the panel */
+const bgPicker = document.getElementById('bgPicker');
+document.getElementById('btnBgPicker')?.addEventListener('click', e => {
+  e.stopPropagation();
+  bgPicker.classList.toggle('open');
+});
+
+/* Close picker when clicking elsewhere */
+document.addEventListener('click', e => {
+  if (!bgPicker.contains(e.target) && e.target.id !== 'btnBgPicker') {
+    bgPicker.classList.remove('open');
+  }
+});
+
+/* Desktop picker option clicks */
+bgPicker.addEventListener('click', e => {
+  const opt = e.target.closest('.bg-option');
+  if (opt) { setBackground(opt.dataset.bg); bgPicker.classList.remove('open'); }
+});
+
+/* Mobile bg thumb clicks */
+document.querySelectorAll('.mob-bg-thumb').forEach(el => {
+  el.addEventListener('click', () => setBackground(el.dataset.bg));
+});
 
 /* ── Music toggle ── */
 document.getElementById('musicToggle').addEventListener('click', ()=>{
