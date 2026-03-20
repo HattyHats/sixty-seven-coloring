@@ -917,26 +917,72 @@ function loadPage(pageObj) {
     if (!svgStr) { loadOvl.classList.add('gone'); toast('SVG not found 😕'); return; }
     processSvgString(svgStr);
   } else {
-    // PNG: load as image
-    const img = new Image();
-    img.onload = () => {
-      const off = document.createElement('canvas');
-      off.width = CW; off.height = CH;
-      const offCtx = off.getContext('2d', { willReadFrequently: true });
-      offCtx.fillStyle = '#fff';
-      offCtx.fillRect(0,0,CW,CH);
-      // Scale to fit
-      const sc2 = Math.min(CW/img.naturalWidth, CH/img.naturalHeight, 1);
-      const dw = img.naturalWidth*sc2, dh = img.naturalHeight*sc2;
-      offCtx.drawImage(img, (CW-dw)/2, (CH-dh)/2, dw, dh);
-      bakeOutline(offCtx.getImageData(0,0,CW,CH).data);
-      colorLayer = ctx.createImageData(CW,CH);
-      resize(); composite();
-      setTimeout(()=>loadOvl.classList.add('gone'),80);
-    };
-    img.onerror = () => { loadOvl.classList.add('gone'); toast('Could not load image.\nMake sure '+pageObj.src+' is in the same folder 😕'); };
-    img.src = pageObj.src;
+    loadPng(pageObj.src);
   }
+}
+
+function loadPng(src) {
+  const img = new Image();
+
+  /* crossOrigin must be set BEFORE src on iOS Safari.
+     Using 'anonymous' avoids canvas taint so getImageData() works. */
+  img.crossOrigin = 'anonymous';
+
+  img.onload = () => {
+    const off    = document.createElement('canvas');
+    off.width    = CW;
+    off.height   = CH;
+    const offCtx = off.getContext('2d', { willReadFrequently: true });
+    offCtx.fillStyle = '#fff';
+    offCtx.fillRect(0, 0, CW, CH);
+
+    /* Scale image to fit inside 500×500 keeping aspect ratio */
+    const sc2 = Math.min(CW / img.naturalWidth, CH / img.naturalHeight, 1);
+    const dw  = img.naturalWidth  * sc2;
+    const dh  = img.naturalHeight * sc2;
+    offCtx.drawImage(img, (CW - dw) / 2, (CH - dh) / 2, dw, dh);
+
+    bakeOutline(offCtx.getImageData(0, 0, CW, CH).data);
+    colorLayer = ctx.createImageData(CW, CH);
+    resize();
+    composite();
+    setTimeout(() => loadOvl.classList.add('gone'), 80);
+  };
+
+  img.onerror = () => {
+    /* If crossOrigin anonymous fails (e.g. server doesn't send CORS headers),
+       fall back to loading without it — canvas will be tainted so fill
+       won't work, but the image will at least display. */
+    const fallback = new Image();
+    fallback.onload = () => {
+      const off    = document.createElement('canvas');
+      off.width    = CW; off.height = CH;
+      const offCtx = off.getContext('2d');
+      offCtx.fillStyle = '#fff';
+      offCtx.fillRect(0, 0, CW, CH);
+      const sc2 = Math.min(CW / fallback.naturalWidth, CH / fallback.naturalHeight, 1);
+      const dw  = fallback.naturalWidth  * sc2;
+      const dh  = fallback.naturalHeight * sc2;
+      offCtx.drawImage(fallback, (CW - dw) / 2, (CH - dh) / 2, dw, dh);
+      /* Draw directly onto main canvas so it's at least visible */
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, CW, CH);
+      ctx.drawImage(fallback, (CW - dw) / 2, (CH - dh) / 2, dw, dh);
+      outlineLayer = null; /* fill won't work without getImageData, but image shows */
+      colorLayer   = ctx.createImageData(CW, CH);
+      resize(); composite();
+      setTimeout(() => loadOvl.classList.add('gone'), 80);
+    };
+    fallback.onerror = () => {
+      loadOvl.classList.add('gone');
+      toast('Could not load image 😕\nCheck ' + src + ' is in the same folder');
+    };
+    fallback.src = src;
+  };
+
+  /* Add a cache-bust query string so iOS Safari doesn't serve a stale
+     cached version that might be missing CORS headers */
+  img.src = src + (src.includes('?') ? '&' : '?') + '_cb=' + Date.now();
 }
 
 function processSvgString(svgStr) {
