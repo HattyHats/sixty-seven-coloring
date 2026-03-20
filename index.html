@@ -199,16 +199,8 @@
   /* ── APP BODY ── */
   .app-body { flex:1; display:flex; min-height:0; overflow:hidden; }
 
-  /* ── SIDEBAR (desktop) ── */
-  .toolbar {
-    width:var(--tbw); flex-shrink:0; background:var(--panel);
-    border-right:3px solid var(--border); box-shadow:3px 0 12px rgba(255,140,0,.10);
-    display:flex; flex-direction:column; align-items:center;
-    padding:8px 6px 12px; overflow-y:auto; overflow-x:hidden;
-    scrollbar-width:thin; scrollbar-color:#ffd6a5 transparent; z-index:10;
-  }
-  .toolbar::-webkit-scrollbar { width:4px; }
-  .toolbar::-webkit-scrollbar-thumb { background:#ffd6a5; border-radius:4px; }
+  /* ── SIDEBAR — hidden on all screen sizes, bottom bar used instead ── */
+  .toolbar { display:none !important; }
   .tb-label { font-family:'Fredoka One',cursive; font-size:.59rem; color:#bbb; letter-spacing:1px; text-transform:uppercase; text-align:center; margin:6px 0 3px; }
   .tb-div { width:62%; height:2px; background:var(--border); border-radius:2px; margin:5px 0; }
   .tb-btn {
@@ -319,8 +311,11 @@
   /* ═══════════════════════════════════════════════
      MOBILE BOTTOM BAR
   ═══════════════════════════════════════════════ */
+  /* ═══════════════════════════════════════════
+     BOTTOM BAR — 2 rows, always visible
+  ═══════════════════════════════════════════ */
   .mob-bar {
-    display:none;
+    display:flex;
     flex-direction:column;
     flex-shrink:0;
     width:100%;
@@ -328,159 +323,124 @@
     border-top:3px solid var(--border);
     box-shadow:0 -4px 20px rgba(0,0,0,.13);
     z-index:50;
-    overflow:hidden;
   }
 
-  /* ROW 1 — Color strip */
-  .mob-color-strip {
-    display:flex !important;
-    flex-direction:row !important;
+  /* ── ROW 1: color strip + brush dots ── */
+  .mob-row1 {
+    display:flex;
     align-items:center;
-    gap:10px;
-    padding:10px 14px;
-    overflow-x:auto;
-    overflow-y:hidden;
-    scrollbar-width:none;
-    -webkit-overflow-scrolling:touch;
     background:#fafafa;
     border-bottom:2px solid var(--border);
-    min-height:68px;
+    min-height:58px;
+    overflow:hidden;
+  }
+  .mob-color-strip {
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:7px 10px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    flex:1;
+    min-width:0;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
   }
   .mob-color-strip::-webkit-scrollbar { display:none; }
-
-  /* Override global .swatch size inside the strip */
   .mob-color-strip .swatch {
-    width:48px !important;
-    height:48px !important;
-    min-width:48px !important;
-    min-height:48px !important;
-    flex-shrink:0 !important;
+    width:40px !important; height:40px !important;
+    min-width:40px !important;
     border-radius:50% !important;
-    border:4px solid #fff !important;
-    box-shadow:0 2px 8px rgba(0,0,0,.18) !important;
+    border:3px solid #fff !important;
+    flex-shrink:0 !important;
     cursor:pointer;
-    transition:transform .13s, border-color .13s, box-shadow .13s;
+    box-shadow:0 2px 6px rgba(0,0,0,.16);
+    transition:transform .12s, border-color .12s;
     -webkit-tap-highlight-color:transparent;
     justify-self:auto;
   }
-  .mob-color-strip .swatch:active { transform:scale(.88) !important; }
+  .mob-color-strip .swatch:active { transform:scale(.86) !important; }
   .mob-color-strip .swatch.on {
     border-color:#111 !important;
     transform:scale(1.18) !important;
-    box-shadow:0 0 0 3px rgba(0,0,0,.25), 0 3px 10px rgba(0,0,0,.2) !important;
+    box-shadow:0 0 0 3px rgba(0,0,0,.22), 0 2px 8px rgba(0,0,0,.18) !important;
   }
   .mob-custom-color {
-    width:48px !important; height:48px !important;
-    min-width:48px !important; min-height:48px !important;
+    width:40px !important; height:40px !important;
+    min-width:40px !important;
     border-radius:50% !important;
-    border:4px solid #fff !important;
+    border:3px solid #fff !important;
     background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red) !important;
     appearance:none !important; -webkit-appearance:none !important;
     overflow:hidden; flex-shrink:0 !important; cursor:pointer;
-    box-shadow:0 2px 8px rgba(0,0,0,.18);
+    box-shadow:0 2px 6px rgba(0,0,0,.16);
   }
-
-  /* ROW 2 — Brush dots */
-  .mob-brush-strip {
-    display:flex !important;
-    flex-direction:row !important;
+  .mob-brush-dots {
+    display:flex;
     align-items:center;
-    gap:14px;
-    padding:8px 14px;
-    overflow-x:auto;
-    overflow-y:hidden;
-    scrollbar-width:none;
-    background:#f0f0f0;
-    border-bottom:2px solid var(--border);
-    min-height:56px;
-  }
-  .mob-brush-strip::-webkit-scrollbar { display:none; }
-  .mob-brush-strip-lbl {
-    font-family:'Fredoka One',cursive; font-size:.7rem;
-    color:#bbb; text-transform:uppercase; letter-spacing:1px;
-    flex-shrink:0; white-space:nowrap;
+    gap:8px;
+    padding:0 12px 0 8px;
+    flex-shrink:0;
+    border-left:2px solid var(--border);
   }
   .bdot {
     border-radius:50%; background:#555; border:3px solid #ddd;
     cursor:pointer; flex-shrink:0; display:block;
-    transition:border-color .13s, transform .13s;
+    transition:border-color .12s, transform .12s;
     -webkit-tap-highlight-color:transparent;
   }
-  .bdot.active { border-color:#4d96ff; transform:scale(1.22); }
-  .bdot:active  { transform:scale(.86); }
+  .bdot.active { border-color:#4d96ff; transform:scale(1.2); }
+  .bdot:active  { transform:scale(.85); }
 
-  /* ROW 3 — Tool buttons */
-  .mob-tools {
-    display:flex !important;
-    flex-direction:row !important;
+  /* ── ROW 2: tools + zoom + bg ── */
+  .mob-tools-row {
+    display:flex;
     align-items:center;
-    justify-content:space-around;
-    padding:6px 8px;
     gap:4px;
+    padding:5px 8px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-width:none;
+    min-height:56px;
     background:#fff;
-    min-height:66px;
   }
+  .mob-tools-row::-webkit-scrollbar { display:none; }
   .mob-btn {
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    flex:1; min-width:50px; max-width:72px; height:58px;
-    border-radius:14px; background:#f5f5f5;
-    border:3px solid transparent; font-size:1.5rem; gap:2px;
-    cursor:pointer;
-    transition:transform .13s, background .13s, border-color .13s;
+    min-width:44px; height:46px; border-radius:11px; background:#f5f5f5;
+    border:2.5px solid transparent; font-size:1.25rem; gap:1px;
+    cursor:pointer; flex-shrink:0;
+    transition:transform .12s, background .12s, border-color .12s;
     -webkit-tap-highlight-color:transparent;
   }
-  .mob-btn span { font-family:'Fredoka One',cursive; font-size:.58rem; color:#888; line-height:1; }
-  .mob-btn:active { transform:scale(.91); }
+  .mob-btn span { font-family:'Fredoka One',cursive; font-size:.5rem; color:#888; line-height:1; }
+  .mob-btn:active { transform:scale(.9); }
   .mob-btn.af { border-color:#4d96ff; background:#e8f2ff; }
   .mob-btn.ad { border-color:#6bcb77; background:#e8f7ea; }
   .mob-btn.ae { border-color:#ff6b6b; background:#ffe8e8; }
-
-  /* ROW 4 — Extras: zoom + backgrounds */
-  .mob-extras {
-    display:flex !important;
-    flex-direction:row !important;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    padding:6px 12px 8px;
-    background:#fafafa;
-    border-top:2px solid var(--border);
-    overflow-x:auto;
-    scrollbar-width:none;
-    min-height:58px;
+  .mob-divider {
+    width:2px; height:32px; background:var(--border);
+    border-radius:2px; flex-shrink:0; margin:0 2px;
   }
-  .mob-extras::-webkit-scrollbar { display:none; }
-  .mob-extra-btn {
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    min-width:52px; height:50px; border-radius:12px;
-    background:#f0f0f0; border:2px solid var(--border);
-    font-size:1.25rem; gap:2px; cursor:pointer; flex-shrink:0;
-    transition:transform .12s, background .12s;
-    font-family:'Fredoka One',cursive;
+  .mob-bg-thumb {
+    width:42px; height:42px; border-radius:9px;
+    border:2.5px solid var(--border); overflow:hidden; cursor:pointer;
+    flex-shrink:0;
+    transition:border-color .12s, transform .12s;
     -webkit-tap-highlight-color:transparent;
   }
-  .mob-extra-btn span { font-family:'Fredoka One',cursive; font-size:.55rem; color:#999; line-height:1; }
-  .mob-extra-btn:active { transform:scale(.9); background:#e0e0e0; }
-  .mob-bg-thumb {
-    width:50px; height:50px; border-radius:10px;
-    border:3px solid var(--border); overflow:hidden; cursor:pointer;
-    transition:border-color .13s, transform .13s;
-    -webkit-tap-highlight-color:transparent; flex-shrink:0;
-  }
   .mob-bg-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
-  .mob-bg-thumb.active { border-color:#4d96ff; transform:scale(1.1); }
-  .mob-bg-thumb:active { transform:scale(.9); }
+  .mob-bg-thumb.active { border-color:#4d96ff; transform:scale(1.08); }
+  .mob-bg-thumb:active  { transform:scale(.9); }
 
   /* ── TOAST ── */
   #toast { position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(80px); background:#3d2b1f; color:#fff; font-family:'Fredoka One',cursive; font-size:1rem; padding:10px 26px; border-radius:40px; box-shadow:0 6px 20px rgba(0,0,0,.2); pointer-events:none; z-index:300; transition:transform .3s cubic-bezier(.34,1.56,.64,1); white-space:nowrap; }
   #toast.show { transform:translateX(-50%) translateY(0); }
 
-  /* ── MOBILE BREAKPOINT ── */
+  /* ── Small screen tweaks ── */
   @media (max-width:700px) {
-    :root { --hdr:50px; --tbw:0px; }
-    .toolbar   { display:none !important; }
-    .mob-bar   { display:flex !important; }
-    .zoom-btns { display:none !important; }
+    :root { --hdr:50px; }
+    .zoom-btns { display:none; }
     .cat-tabs  { gap:4px; }
     .cat-tab   { padding:4px 10px; font-size:.76rem; }
     .page-bar  { height:44px; min-height:44px; gap:6px; padding:0 8px; }
@@ -621,58 +581,52 @@
     </div>
   </div>
 
-  <!-- ── MOBILE BOTTOM BAR — always visible, no drawer needed ── -->
+  <!-- ── BOTTOM BAR — 2 rows ── -->
   <div class="mob-bar" id="mobBar">
 
-    <!-- ROW 1: Color swatches — horizontally scrollable, always visible -->
-    <div class="mob-color-strip" id="mobColors">
-      <div class="swatch on"  style="background:#e63946" data-c="#e63946"></div>
-      <div class="swatch"     style="background:#f4701b" data-c="#f4701b"></div>
-      <div class="swatch"     style="background:#ffd93d" data-c="#ffd93d"></div>
-      <div class="swatch"     style="background:#57cc04" data-c="#57cc04"></div>
-      <div class="swatch"     style="background:#06d6a0" data-c="#06d6a0"></div>
-      <div class="swatch"     style="background:#4d96ff" data-c="#4d96ff"></div>
-      <div class="swatch"     style="background:#9b5de5" data-c="#9b5de5"></div>
-      <div class="swatch"     style="background:#f15bb5" data-c="#f15bb5"></div>
-      <div class="swatch"     style="background:#a0522d" data-c="#a0522d"></div>
-      <div class="swatch"     style="background:#888888" data-c="#888888"></div>
-      <div class="swatch"     style="background:#ffffff;border-color:#ccc" data-c="#ffffff"></div>
-      <div class="swatch"     style="background:#111111" data-c="#111111"></div>
-      <input type="color" id="mobCustomColor" value="#e63946" title="Any color" class="swatch mob-custom-color"/>
+    <!-- ROW 1: Colors (swipe) + brush dots pinned on right -->
+    <div class="mob-row1">
+      <div class="mob-color-strip" id="mobColors">
+        <div class="swatch on"  style="background:#e63946" data-c="#e63946"></div>
+        <div class="swatch"     style="background:#f4701b" data-c="#f4701b"></div>
+        <div class="swatch"     style="background:#ffd93d" data-c="#ffd93d"></div>
+        <div class="swatch"     style="background:#57cc04" data-c="#57cc04"></div>
+        <div class="swatch"     style="background:#06d6a0" data-c="#06d6a0"></div>
+        <div class="swatch"     style="background:#4d96ff" data-c="#4d96ff"></div>
+        <div class="swatch"     style="background:#9b5de5" data-c="#9b5de5"></div>
+        <div class="swatch"     style="background:#f15bb5" data-c="#f15bb5"></div>
+        <div class="swatch"     style="background:#a0522d" data-c="#a0522d"></div>
+        <div class="swatch"     style="background:#888" data-c="#888888"></div>
+        <div class="swatch"     style="background:#fff;border-color:#ccc" data-c="#ffffff"></div>
+        <div class="swatch"     style="background:#111" data-c="#111111"></div>
+        <input type="color" id="mobCustomColor" value="#e63946" class="swatch mob-custom-color" title="Custom"/>
+      </div>
+      <!-- Brush dots pinned to right of row 1 -->
+      <div class="mob-brush-dots" id="mobBrushDots">
+        <button class="bdot" data-px="4"  style="width:10px;height:10px"></button>
+        <button class="bdot" data-px="10" style="width:16px;height:16px"></button>
+        <button class="bdot active" data-px="18" style="width:24px;height:24px"></button>
+        <button class="bdot" data-px="28" style="width:32px;height:32px"></button>
+        <button class="bdot" data-px="40" style="width:42px;height:42px"></button>
+      </div>
     </div>
 
-    <!-- ROW 2: Brush size dots — always visible -->
-    <div class="mob-brush-strip" id="mobBrushDots">
-      <span class="mob-brush-strip-lbl">Brush</span>
-      <button class="bdot" data-px="4"  style="width:12px;height:12px"></button>
-      <button class="bdot" data-px="10" style="width:18px;height:18px"></button>
-      <button class="bdot active" data-px="18" style="width:26px;height:26px"></button>
-      <button class="bdot" data-px="28" style="width:36px;height:36px"></button>
-      <button class="bdot" data-px="40" style="width:48px;height:48px"></button>
-    </div>
-
-    <!-- ROW 3: Tool buttons — always visible -->
-    <div class="mob-tools">
+    <!-- ROW 2: Tools + Zoom + BG — all in one scrollable row -->
+    <div class="mob-tools-row">
       <button class="mob-btn af" id="mFill"  >🪣<span>Fill</span></button>
       <button class="mob-btn"    id="mDraw"  >✏️<span>Draw</span></button>
       <button class="mob-btn"    id="mEraser">🧽<span>Erase</span></button>
       <button class="mob-btn"    id="mUndo"  >↩️<span>Undo</span></button>
       <button class="mob-btn"    id="mClear" >🗑️<span>Clear</span></button>
       <button class="mob-btn"    id="mSave"  >💾<span>Save</span></button>
-    </div>
-
-    <!-- ROW 4: Zoom + Background — compact extras row -->
-    <div class="mob-extras">
-      <button class="mob-extra-btn" id="mZoomOut">−<span>Zoom</span></button>
-      <button class="mob-extra-btn" id="mZoomFit">⌖<span>Fit</span></button>
-      <button class="mob-extra-btn" id="mZoomIn" >+<span>Zoom</span></button>
-      <div class="mob-bg-thumb active" data-bg="bubbles" title="Bubbles">
-        <img src="bubbles.gif" alt="Bubbles"/>
-      </div>
-      <div class="mob-bg-thumb" data-bg="bubbles1" title="Bubbles 2">
-        <img src="bubbles1.gif" alt="Bubbles 2"/>
-      </div>
-      <!-- ADD MORE backgrounds: copy the mob-bg-thumb block above -->
+      <div class="mob-divider"></div>
+      <button class="mob-btn" id="mZoomOut">−<span>Zoom</span></button>
+      <button class="mob-btn" id="mZoomFit">⌖<span>Fit</span></button>
+      <button class="mob-btn" id="mZoomIn" >+<span>Zoom</span></button>
+      <div class="mob-divider"></div>
+      <div class="mob-bg-thumb active" data-bg="bubbles" title="Bubbles"><img src="bubbles.gif" alt=""/></div>
+      <div class="mob-bg-thumb" data-bg="bubbles1" title="Bubbles 2"><img src="bubbles1.gif" alt=""/></div>
+      <!-- ADD MORE backgrounds here -->
     </div>
 
   </div>
