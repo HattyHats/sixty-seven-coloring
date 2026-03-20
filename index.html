@@ -237,13 +237,13 @@
     flex:1; min-width:0; min-height:0;
     display:flex; align-items:center; justify-content:center;
     overflow:hidden; position:relative;
-    /* default background — overridden by JS via data-bg attribute */
     background-image: url('bubbles.gif');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    transition: background-image 0.3s;
+    cursor: grab;  /* shows hand cursor on the background = draggable */
   }
+  .canvas-area:active { cursor: grabbing; }
   /* Vignette so canvas pops off background */
   .canvas-area::before {
     content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
@@ -254,7 +254,7 @@
   #mainCanvas {
     border-radius:var(--radius);
     box-shadow:0 8px 40px rgba(0,0,0,0.28),0 2px 8px rgba(0,0,0,0.14);
-    cursor:crosshair; display:block; touch-action:none;
+    cursor:crosshair !important; display:block; touch-action:none;
     background:#ffffff;
   }
   .zoom-btns { position:absolute; bottom:14px; right:14px; display:flex; flex-direction:column; gap:6px; z-index:12; }
@@ -1062,33 +1062,86 @@ function drawAt(x,y,isFirst){
   colorLayer=tc.getImageData(0,0,CW,CH);composite();
 }
 
-/* ── Pointer events — skip if 2-finger gesture ── */
+/* ── Pointer events ──────────────────────────────────────────
+   Logic:
+   • Pointer DOWN on canvasArea background → start PAN
+   • Pointer DOWN on mainCanvas            → draw/fill (unless 2-finger)
+   • 2 fingers anywhere on canvasArea      → pinch-zoom (handled above)
+──────────────────────────────────────────────────────────── */
 let activePointers = 0;
-function getCanvasXY(e){
-  const r=mainCanvas.getBoundingClientRect();
-  const cx=e.clientX??(e.touches?.[0]?.clientX??0);
-  const cy=e.clientY??(e.touches?.[0]?.clientY??0);
-  return[Math.round((cx-r.left)*(CW/r.width)),Math.round((cy-r.top)*(CH/r.height))];
+let isPanning = false;
+let panStartX = 0, panStartY = 0, panBaseX = 0, panBaseY = 0;
+
+/* Coordinate helper for drawing */
+function getCanvasXY(e) {
+  const r  = mainCanvas.getBoundingClientRect();
+  const cx = e.clientX ?? (e.touches?.[0]?.clientX ?? 0);
+  const cy = e.clientY ?? (e.touches?.[0]?.clientY ?? 0);
+  return [
+    Math.round((cx - r.left) * (CW / r.width)),
+    Math.round((cy - r.top)  * (CH / r.height))
+  ];
 }
 
-mainCanvas.addEventListener('pointerdown',e=>{
+/* Is the pointer hitting the mainCanvas element? */
+function hitsCanvas(e) {
+  return e.target === mainCanvas;
+}
+
+/* ── canvasArea background: pan on single-finger drag ── */
+canvasArea.addEventListener('pointerdown', e => {
+  if (hitsCanvas(e)) return;          // let mainCanvas handle it
+  if (touches.size >= 2) return;       // pinch is already active
+  if (e.button !== undefined && e.button !== 0) return; // left button only
+  isPanning = true;
+  canvasArea.style.cursor = 'grabbing';
+  panStartX = e.clientX;
+  panStartY = e.clientY;
+  panBaseX  = panX;
+  panBaseY  = panY;
+  e.preventDefault();
+}, { passive: false });
+
+canvasArea.addEventListener('pointermove', e => {
+  if (!isPanning || touches.size >= 2) return;
+  panX = panBaseX + (e.clientX - panStartX);
+  panY = panBaseY + (e.clientY - panStartY);
+  clampPan();
+  applyTransform();
+  e.preventDefault();
+}, { passive: false });
+
+canvasArea.addEventListener('pointerup',     () => { isPanning = false; canvasArea.style.cursor = 'grab'; });
+canvasArea.addEventListener('pointercancel', () => { isPanning = false; canvasArea.style.cursor = 'grab'; });
+canvasArea.addEventListener('pointerleave',  () => { isPanning = false; canvasArea.style.cursor = 'grab'; });
+
+/* ── mainCanvas: draw / fill ── */
+mainCanvas.addEventListener('pointerdown', e => {
   activePointers++;
-  if(activePointers>1){isDrawing=false;return;} // ignore if multi-touch
+  if (activePointers > 1) { isDrawing = false; return; }
+  if (touches.size >= 2) return;
   e.preventDefault();
-  const[x,y]=getCanvasXY(e);
-  if(x<0||x>=CW||y<0||y>=CH)return;
-  if(activeTool==='fill'){floodFill(x,y);}
-  else{isDrawing=true;pushUndo();drawAt(x,y,true);[lastX,lastY]=[x,y];}
-},{passive:false});
+  e.stopPropagation(); /* don't bubble to canvasArea pan handler */
+  const [x, y] = getCanvasXY(e);
+  if (x < 0 || x >= CW || y < 0 || y >= CH) return;
+  if (activeTool === 'fill') { floodFill(x, y); }
+  else { isDrawing = true; pushUndo(); drawAt(x, y, true); [lastX, lastY] = [x, y]; }
+}, { passive: false });
 
-mainCanvas.addEventListener('pointermove',e=>{
-  if(!isDrawing||activePointers>1)return;
+mainCanvas.addEventListener('pointermove', e => {
+  if (!isDrawing || activePointers > 1) return;
   e.preventDefault();
-  const[x,y]=getCanvasXY(e);
-  drawAt(x,y,false);[lastX,lastY]=[x,y];
-},{passive:false});
+  e.stopPropagation();
+  const [x, y] = getCanvasXY(e);
+  drawAt(x, y, false); [lastX, lastY] = [x, y];
+}, { passive: false });
 
-['pointerup','pointercancel','pointerleave'].forEach(ev=>mainCanvas.addEventListener(ev,()=>{activePointers=Math.max(0,activePointers-1);if(activePointers===0)isDrawing=false;}));
+['pointerup', 'pointercancel', 'pointerleave'].forEach(ev =>
+  mainCanvas.addEventListener(ev, () => {
+    activePointers = Math.max(0, activePointers - 1);
+    if (activePointers === 0) isDrawing = false;
+  })
+);
 
 /* ── Tool switching ── */
 function setTool(t){
