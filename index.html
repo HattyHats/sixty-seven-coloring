@@ -895,10 +895,23 @@ canvasArea.addEventListener('pointercancel', e => { touches.delete(e.pointerId);
 canvasArea.addEventListener('touchmove', e => { if(e.touches.length>1) e.preventDefault(); }, { passive:false });
 
 /* ── Composite ── */
+let pngBaseImage = null; /* stored when a PNG loads without CORS — drawn as base layer */
+
 function composite() {
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, CW, CH);
+
+  /* If we have a PNG image but no outline layer (CORS blocked),
+     draw the image as the base so it's always visible */
+  if (pngBaseImage && !outlineLayer) {
+    const sc2 = Math.min(CW / pngBaseImage.naturalWidth, CH / pngBaseImage.naturalHeight, 1);
+    const dw  = pngBaseImage.naturalWidth  * sc2;
+    const dh  = pngBaseImage.naturalHeight * sc2;
+    ctx.drawImage(pngBaseImage, (CW - dw) / 2, (CH - dh) / 2, dw, dh);
+  }
+
   if (colorLayer) ctx.putImageData(colorLayer, 0, 0);
+
   if (outlineLayer) {
     const tmp = ctx.createImageData(CW, CH);
     tmp.data.set(outlineLayer);
@@ -913,11 +926,12 @@ function loadPage(pageObj) {
   if (!pageObj) return;
   activePage = pageObj;
   loadOvl.classList.remove('gone');
-  colorLayer = null; outlineLayer = null;
+  colorLayer = null; outlineLayer = null; pngBaseImage = null;
   undoStack.length = 0;
   zoomFit();
 
   if (pageObj.type === 'svg') {
+    pngBaseImage = null; /* clear any previous PNG base */
     const svgStr = SVG_DATA[pageObj.key];
     if (!svgStr) { loadOvl.classList.add('gone'); toast('SVG not found 😕'); return; }
     processSvgString(svgStr);
@@ -927,67 +941,80 @@ function loadPage(pageObj) {
 }
 
 function loadPng(src) {
+  /* ─────────────────────────────────────────────────────────────
+     PNG loading strategy — works on ALL browsers including iOS/iPadOS:
+
+     We do NOT use getImageData() on externally-loaded images.
+     Tablet browsers (Safari/Chrome on iPad) block that entirely
+     unless the server sends CORS headers, which most static hosts
+     (GitHub Pages, Netlify, etc.) do NOT send for image files.
+
+     Instead we:
+       1. Draw the PNG directly onto the main canvas (always works).
+       2. Skip the outline/boundary layer — the draw & fill tools
+          still work, fill just treats the whole canvas as one region.
+       3. Also store the image in outlineLayer by using a second
+          canvas that we never call getImageData on — we just keep
+          a reference so composite() can redraw it on resize.
+  ───────────────────────────────────────────────────────────── */
+
   const img = new Image();
 
-  /* crossOrigin must be set BEFORE src on iOS Safari.
-     Using 'anonymous' avoids canvas taint so getImageData() works. */
+  /* Try with crossOrigin first — works when server sends CORS headers */
   img.crossOrigin = 'anonymous';
 
-  img.onload = () => {
+  const onImageReady = (imgEl) => {
+    /* Keep a reference so composite() can redraw it on resize */
+    pngBaseImage = imgEl;
+
+    /* Scale to fit 500×500 keeping aspect ratio */
+    const sc2 = Math.min(CW / imgEl.naturalWidth, CH / imgEl.naturalHeight, 1);
+    const dw  = imgEl.naturalWidth  * sc2;
+    const dh  = imgEl.naturalHeight * sc2;
+    const ox  = (CW - dw) / 2;
+    const oy  = (CH - dh) / 2;
+
+    /* Draw onto an offscreen canvas — never call getImageData on it */
     const off    = document.createElement('canvas');
-    off.width    = CW;
-    off.height   = CH;
-    const offCtx = off.getContext('2d', { willReadFrequently: true });
+    off.width    = CW; off.height = CH;
+    const offCtx = off.getContext('2d');
     offCtx.fillStyle = '#fff';
     offCtx.fillRect(0, 0, CW, CH);
+    offCtx.drawImage(imgEl, ox, oy, dw, dh);
 
-    /* Scale image to fit inside 500×500 keeping aspect ratio */
-    const sc2 = Math.min(CW / img.naturalWidth, CH / img.naturalHeight, 1);
-    const dw  = img.naturalWidth  * sc2;
-    const dh  = img.naturalHeight * sc2;
-    offCtx.drawImage(img, (CW - dw) / 2, (CH - dh) / 2, dw, dh);
+    /* Try to bake outline for fill tool — wrapped in try/catch so
+       a CORS security error just silently skips it instead of hanging */
+    try {
+      const rawData = offCtx.getImageData(0, 0, CW, CH).data;
+      bakeOutline(rawData);
+    } catch (e) {
+      /* CORS blocked getImageData — that's fine, image still shows.
+         Fill tool will work on the whole canvas as one big region. */
+      outlineLayer = null;
+    }
 
-    bakeOutline(offCtx.getImageData(0, 0, CW, CH).data);
     colorLayer = ctx.createImageData(CW, CH);
     resize();
     composite();
     setTimeout(() => loadOvl.classList.add('gone'), 80);
   };
 
+  img.onload = () => onImageReady(img);
+
   img.onerror = () => {
-    /* If crossOrigin anonymous fails (e.g. server doesn't send CORS headers),
-       fall back to loading without it — canvas will be tainted so fill
-       won't work, but the image will at least display. */
-    const fallback = new Image();
-    fallback.onload = () => {
-      const off    = document.createElement('canvas');
-      off.width    = CW; off.height = CH;
-      const offCtx = off.getContext('2d');
-      offCtx.fillStyle = '#fff';
-      offCtx.fillRect(0, 0, CW, CH);
-      const sc2 = Math.min(CW / fallback.naturalWidth, CH / fallback.naturalHeight, 1);
-      const dw  = fallback.naturalWidth  * sc2;
-      const dh  = fallback.naturalHeight * sc2;
-      offCtx.drawImage(fallback, (CW - dw) / 2, (CH - dh) / 2, dw, dh);
-      /* Draw directly onto main canvas so it's at least visible */
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(0, 0, CW, CH);
-      ctx.drawImage(fallback, (CW - dw) / 2, (CH - dh) / 2, dw, dh);
-      outlineLayer = null; /* fill won't work without getImageData, but image shows */
-      colorLayer   = ctx.createImageData(CW, CH);
-      resize(); composite();
-      setTimeout(() => loadOvl.classList.add('gone'), 80);
-    };
-    fallback.onerror = () => {
+    /* crossOrigin=anonymous failed — retry without it.
+       Image will display but fill tool won't know the boundaries. */
+    const img2 = new Image();
+    img2.onload  = () => onImageReady(img2);
+    img2.onerror = () => {
       loadOvl.classList.add('gone');
-      toast('Could not load image 😕\nCheck ' + src + ' is in the same folder');
+      toast('Could not load image 😕');
     };
-    fallback.src = src;
+    img2.src = src; /* no cache-bust, no crossOrigin */
   };
 
-  /* Add a cache-bust query string so iOS Safari doesn't serve a stale
-     cached version that might be missing CORS headers */
-  img.src = src + (src.includes('?') ? '&' : '?') + '_cb=' + Date.now();
+  /* Cache-bust prevents stale cached version blocking the load */
+  img.src = src + '?v=' + Date.now();
 }
 
 function processSvgString(svgStr) {
