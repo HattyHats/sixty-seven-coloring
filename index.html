@@ -176,6 +176,47 @@
   }
   #musicToggle:hover { background:rgba(255,255,255,.5); transform:scale(1.1); }
 
+  /* Music picker panel — floats below the header */
+  #musicPicker {
+    position:fixed; top:var(--hdr); right:12px;
+    background:#fff; border-radius:16px;
+    box-shadow:0 8px 32px rgba(0,0,0,.22), 0 2px 8px rgba(0,0,0,.10);
+    padding:12px; z-index:200;
+    display:none; flex-direction:column; gap:4px;
+    min-width:210px;
+    animation:pickerIn .18s ease;
+  }
+  #musicPicker.open { display:flex; }
+  #musicPicker .picker-title {
+    font-family:'Fredoka One',cursive; font-size:.75rem; color:#bbb;
+    text-transform:uppercase; letter-spacing:1px; text-align:center;
+    border-bottom:2px solid var(--border); padding-bottom:6px; margin-bottom:4px;
+  }
+  .music-option {
+    display:flex; align-items:center; gap:10px;
+    padding:8px 10px; border-radius:10px; cursor:pointer;
+    border:2.5px solid transparent;
+    transition:border-color .13s, background .13s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .music-option:hover  { background:#f5f5f5; }
+  .music-option.active { border-color:#4d96ff; background:#e8f2ff; }
+  .music-option .music-icon { font-size:1.3rem; flex-shrink:0; }
+  .music-option .music-info { display:flex; flex-direction:column; gap:1px; }
+  .music-option .music-name { font-family:'Fredoka One',cursive; font-size:.88rem; color:#444; }
+  .music-option .music-sub  { font-family:'Fredoka One',cursive; font-size:.62rem; color:#aaa; }
+  /* Stop button inside picker */
+  .music-stop {
+    display:flex; align-items:center; gap:10px;
+    padding:8px 10px; border-radius:10px; cursor:pointer;
+    border:2.5px solid transparent;
+    margin-top:4px; border-top:2px solid var(--border); padding-top:10px;
+    transition:border-color .13s, background .13s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .music-stop:hover { background:#fff5f5; }
+  .music-stop.active { border-color:#ff6b6b; background:#ffe8e8; }
+
   /* ── PAGE BAR ── */
   .page-bar {
     height:52px; min-height:52px; flex-shrink:0;
@@ -481,10 +522,36 @@
   </div>
 </div>
 
-<!-- Background piano music — starts on Enter click -->
-<audio id="bgMusic" loop preload="auto">
-  <source src="piano-music.mp3" type="audio/mpeg"/>
-</audio>
+<!-- Background music tracks -->
+<audio id="track_piano"   loop preload="none"><source src="piano-music.mp3" type="audio/mpeg"/></audio>
+<audio id="track_relax"   loop preload="none"><source src="sigmamusicart-relaxing-relax-background-music-462072.mp3" type="audio/mpeg"/></audio>
+
+<!-- Music picker panel -->
+<div id="musicPicker">
+  <div class="picker-title">🎵 Music</div>
+  <div class="music-option active" data-track="piano">
+    <span class="music-icon">🎹</span>
+    <div class="music-info">
+      <span class="music-name">Piano</span>
+      <span class="music-sub">Classic piano</span>
+    </div>
+  </div>
+  <div class="music-option" data-track="relax">
+    <span class="music-icon">🌿</span>
+    <div class="music-info">
+      <span class="music-name">Relaxing</span>
+      <span class="music-sub">Calm background</span>
+    </div>
+  </div>
+  <!-- ADD MORE: copy a music-option block, add track in JS MUSIC_TRACKS -->
+  <div class="music-stop" id="musicStop">
+    <span class="music-icon">🔇</span>
+    <div class="music-info">
+      <span class="music-name">No Music</span>
+      <span class="music-sub">Turn off</span>
+    </div>
+  </div>
+</div>
 
 <!-- MAIN APP -->
 <div id="app">
@@ -497,8 +564,8 @@
       <button class="cat-tab" data-cat="normal">🖼️ Normal</button>
       <button class="cat-tab" data-cat="upload">📁 Upload</button>
     </div>
-    <!-- Music toggle -->
-    <button id="musicToggle" title="Mute music">🎵</button>
+    <!-- Music picker button -->
+    <button id="musicToggle" title="Choose music">🎵</button>
   </header>
 
   <!-- ── PAGE PICKER BAR (scrollable thumbnails under header) ── -->
@@ -581,6 +648,14 @@
           <img class="bg-thumb" src="bubbles1.jpeg" alt="Bubbles 1"/>
           <span class="bg-option-label">Bubbles 1</span>
         </div>
+        <div class="bg-option" data-bg="trippy1_jpg">
+          <img class="bg-thumb" src="trippy1.jpeg" alt="Trippy 1"/>
+          <span class="bg-option-label">Trippy 1</span>
+        </div>
+        <div class="bg-option" data-bg="trippy2_jpg">
+          <img class="bg-thumb" src="trippy2.jpeg" alt="Trippy 2"/>
+          <span class="bg-option-label">Trippy 2</span>
+        </div>
         <!-- ADD MORE: copy a bg-option block, add entry to BACKGROUNDS in JS -->
       </div>
     </div>
@@ -631,6 +706,8 @@
       <div class="mob-divider"></div>
       <div class="mob-bg-thumb active" data-bg="bubbles_jpg" title="Bubbles"><img src="bubbles.jpeg" alt=""/></div>
       <div class="mob-bg-thumb" data-bg="bubbles1_jpg" title="Bubbles 1"><img src="bubbles1.jpeg" alt=""/></div>
+      <div class="mob-bg-thumb" data-bg="trippy1_jpg" title="Trippy 1"><img src="trippy1.jpeg" alt=""/></div>
+      <div class="mob-bg-thumb" data-bg="trippy2_jpg" title="Trippy 2"><img src="trippy2.jpeg" alt=""/></div>
       <!-- ADD MORE bg thumbs here -->
     </div>
 
@@ -1345,12 +1422,8 @@ function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearT
 /* ── Splash → App ── */
 function enterApp(){
   document.getElementById('splash').classList.add('leaving');
-
-  /* Start piano music — user gesture here satisfies browser autoplay policy */
-  const music = document.getElementById('bgMusic');
-  music.volume = 0.45;
-  music.play().catch(()=>{}); /* catch silences any autoplay errors gracefully */
-
+  /* Auto-play piano on Enter — satisfies browser autoplay policy */
+  playTrack('piano');
   setTimeout(()=>{
     document.getElementById('splash').style.display='none';
     document.getElementById('app').classList.add('visible');
@@ -1362,67 +1435,111 @@ function enterApp(){
 /* ── Background switcher ── */
 /*
   TO ADD A NEW BACKGROUND:
-  1. Add entry to BACKGROUNDS below (still or moving section).
-  2. Add a .bg-option block in the correct section inside #bgPicker HTML.
+  1. Add entry to BACKGROUNDS below.
+  2. Add a .bg-option block inside #bgPicker HTML.
   3. Add a .mob-bg-thumb in the mobile tools row HTML.
 */
 const BACKGROUNDS = {
   bubbles_jpg:  { src: 'bubbles.jpeg',  label: 'Bubbles'   },
   bubbles1_jpg: { src: 'bubbles1.jpeg', label: 'Bubbles 1' },
+  trippy1_jpg:  { src: 'trippy1.jpeg',  label: 'Trippy 1'  },
+  trippy2_jpg:  { src: 'trippy2.jpeg',  label: 'Trippy 2'  },
   /* ADD MORE: myBg: { src: 'my-bg.jpeg', label: 'My BG' } */
 };
 
-/* Default = still JPEG — loads instantly on every device */
 let activeBg = 'bubbles_jpg';
 
 function setBackground(key) {
   const bg = BACKGROUNDS[key];
   if (!bg) return;
   activeBg = key;
-
-  /* Apply to canvas area */
   canvasArea.style.backgroundImage = `url('${bg.src}')`;
-
-  /* Update desktop picker active state */
   document.querySelectorAll('.bg-option').forEach(el =>
     el.classList.toggle('active', el.dataset.bg === key));
-
-  /* Update mobile picker active state */
   document.querySelectorAll('.mob-bg-thumb').forEach(el =>
     el.classList.toggle('active', el.dataset.bg === key));
 }
 
-/* Desktop bg picker button — toggles the panel */
 const bgPicker = document.getElementById('bgPicker');
 document.getElementById('btnBgPicker')?.addEventListener('click', e => {
   e.stopPropagation();
   bgPicker.classList.toggle('open');
 });
-
-/* Close picker when clicking elsewhere */
 document.addEventListener('click', e => {
   if (!bgPicker.contains(e.target) && e.target.id !== 'btnBgPicker') {
     bgPicker.classList.remove('open');
   }
 });
-
-/* Desktop picker option clicks */
 bgPicker.addEventListener('click', e => {
   const opt = e.target.closest('.bg-option');
   if (opt) { setBackground(opt.dataset.bg); bgPicker.classList.remove('open'); }
 });
-
-/* Mobile bg thumb clicks */
 document.querySelectorAll('.mob-bg-thumb').forEach(el => {
   el.addEventListener('click', () => setBackground(el.dataset.bg));
 });
 
-/* ── Music toggle ── */
-document.getElementById('musicToggle').addEventListener('click', ()=>{
-  const music = document.getElementById('bgMusic');
-  const btn   = document.getElementById('musicToggle');
-  if(music.paused){ music.play(); btn.textContent='🎵'; btn.title='Mute music'; }
-  else            { music.pause(); btn.textContent='🔇'; btn.title='Play music'; }
+/* ── Music system ── */
+/*
+  TO ADD A NEW TRACK:
+  1. Add <audio id="track_yourkey"> element near the top of the body.
+  2. Add an entry to MUSIC_TRACKS below.
+  3. Add a .music-option block in #musicPicker HTML.
+*/
+const MUSIC_TRACKS = {
+  piano: { label: 'Piano',    icon: '🎹', sub: 'Classic piano'   },
+  relax: { label: 'Relaxing', icon: '🌿', sub: 'Calm background' },
+  /* ADD MORE: yourkey: { label: 'Name', icon: '🎸', sub: 'Description' } */
+};
+
+let activeTrack = null;
+
+function getTrackEl(key) { return document.getElementById('track_' + key); }
+
+function playTrack(key) {
+  /* Stop all tracks */
+  Object.keys(MUSIC_TRACKS).forEach(k => {
+    const el = getTrackEl(k);
+    if (el) { el.pause(); el.currentTime = 0; }
+  });
+  if (!key || key === 'none') {
+    activeTrack = null;
+    updateMusicUI();
+    return;
+  }
+  const el = getTrackEl(key);
+  if (!el) return;
+  activeTrack  = key;
+  el.volume    = 0.45;
+  el.play().catch(() => {});
+  updateMusicUI();
+}
+
+function updateMusicUI() {
+  const btn = document.getElementById('musicToggle');
+  btn.textContent = activeTrack ? '🎵' : '🔇';
+  document.querySelectorAll('.music-option').forEach(el =>
+    el.classList.toggle('active', el.dataset.track === activeTrack));
+  const stopBtn = document.getElementById('musicStop');
+  if (stopBtn) stopBtn.classList.toggle('active', !activeTrack);
+}
+
+/* Music button opens/closes the picker */
+const musicPicker = document.getElementById('musicPicker');
+document.getElementById('musicToggle').addEventListener('click', e => {
+  e.stopPropagation();
+  musicPicker.classList.toggle('open');
+  if (bgPicker) bgPicker.classList.remove('open'); /* close bg picker if open */
+});
+document.addEventListener('click', e => {
+  if (musicPicker && !musicPicker.contains(e.target) && e.target.id !== 'musicToggle') {
+    musicPicker.classList.remove('open');
+  }
+});
+musicPicker.addEventListener('click', e => {
+  const opt  = e.target.closest('.music-option');
+  const stop = e.target.closest('.music-stop');
+  if (opt)  { playTrack(opt.dataset.track); musicPicker.classList.remove('open'); }
+  if (stop) { playTrack('none');            musicPicker.classList.remove('open'); }
 });
 
 /* ── Init ── */
