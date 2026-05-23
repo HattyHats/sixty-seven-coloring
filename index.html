@@ -501,6 +501,23 @@
   #toast { position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(80px); background:#3d2b1f; color:#fff; font-family:'Fredoka One',cursive; font-size:1rem; padding:10px 26px; border-radius:40px; box-shadow:0 6px 20px rgba(0,0,0,.2); pointer-events:none; z-index:300; transition:transform .3s cubic-bezier(.34,1.56,.64,1); white-space:nowrap; }
   #toast.show { transform:translateX(-50%) translateY(0); }
 
+  /* ── DREAM OVERLAY ── */
+  #dreamOverlay {
+    position:fixed; inset:0; z-index:9000;
+    display:flex; align-items:center; justify-content:center;
+    pointer-events:none; opacity:0;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    transition: opacity 0.3s ease;
+  }
+  #dreamOverlay.show { opacity:1; }
+  #glitchDream {
+    font-size:clamp(3rem,9vw,6rem);
+    color: #fff; text-shadow:0 0 30px rgba(255,255,255,0.9);
+  }
+  #glitchDream::before { color:#ff6b6b; animation:glitchT 0.5s infinite; }
+  #glitchDream::after  { color:#4d96ff; animation:glitchB 0.5s infinite; }
+  #dreamOverlay.show #glitchDream { animation:glitch 0.5s infinite; }
+
   /* ── Small screen tweaks ── */
   @media (max-width:700px) {
     :root { --hdr:50px; }
@@ -580,6 +597,7 @@
     <div class="cat-tabs" id="catTabs">
       <button class="cat-tab active" data-cat="67">⭐ 67</button>
       <button class="cat-tab" data-cat="normal">🖼️ Normal</button>
+      <button class="cat-tab" data-cat="dream">✨ Dream</button>
       <button class="cat-tab" data-cat="upload">📁 Upload</button>
     </div>
     <!-- Music picker button -->
@@ -735,6 +753,9 @@
 </div>
 
 <div id="toast"></div>
+<div id="dreamOverlay">
+  <div class="glitch-name" id="glitchDream" data-text="Color The World">Color The World</div>
+</div>
 
 <script>
 "use strict";
@@ -781,6 +802,12 @@ const CATS = {
       { key:'n_park_fun',     label:'🌳 Park Fun',     type:'png', src:'kid-at-park.png' },
     ]
   },
+  'dream': {
+    label: '✨ Dream',
+    pages: [
+      { key:'d_blank', label:'Blank Canvas', type:'svg' }
+    ]
+  },
   'upload': {
     label: '📁 Upload',
     pages: [] // filled dynamically
@@ -789,6 +816,7 @@ const CATS = {
 
 /* ── Inline SVG data ── */
 const SVG_DATA = {
+d_blank: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><rect width="500" height="500" fill="white"/></svg>`,
 r_rocket:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><rect width="500" height="500" fill="white"/><circle cx="55" cy="60" r="5" fill="none" stroke="#111" stroke-width="3"/><circle cx="445" cy="90" r="6" fill="none" stroke="#111" stroke-width="3"/><circle cx="75" cy="385" r="4" fill="none" stroke="#111" stroke-width="3"/><circle cx="430" cy="350" r="5" fill="none" stroke="#111" stroke-width="3"/><circle cx="155" cy="440" r="3" fill="none" stroke="#111" stroke-width="3"/><circle cx="375" cy="435" r="4" fill="none" stroke="#111" stroke-width="3"/><path d="M250,50 C196,50 155,126 150,224 L350,224 C345,126 304,50 250,50 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><circle cx="250" cy="168" r="35" fill="white" stroke="#111" stroke-width="5"/><circle cx="250" cy="168" r="20" fill="white" stroke="#111" stroke-width="3.5"/><ellipse cx="250" cy="84" rx="27" ry="27" fill="white" stroke="#111" stroke-width="4"/><rect x="150" y="224" width="200" height="114" rx="8" fill="white" stroke="#111" stroke-width="5"/><line x1="205" y1="234" x2="205" y2="328" stroke="#111" stroke-width="3"/><line x1="295" y1="234" x2="295" y2="328" stroke="#111" stroke-width="3"/><path d="M150,244 C114,264 90,317 96,338 L150,316 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M350,244 C386,264 410,317 404,338 L350,316 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M150,338 C155,362 196,377 250,377 C304,377 345,362 350,338 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M196,377 C180,397 170,428 186,453 C208,432 230,422 250,427 C270,422 292,432 314,453 C330,428 320,397 304,377 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M222,382 C211,402 215,424 232,438 C239,425 250,418 261,418 C272,418 283,425 268,438 C285,424 289,402 278,382 Z" fill="white" stroke="#111" stroke-width="4" stroke-linejoin="round"/></svg>`,
 
 r_dino:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><rect width="500" height="500" fill="white"/><path d="M22,440 Q115,416 200,433 Q300,450 400,426 Q450,418 478,440 L478,490 L22,490 Z" fill="white" stroke="#111" stroke-width="4"/><circle cx="52" cy="356" r="38" fill="white" stroke="#111" stroke-width="3.5"/><line x1="52" y1="394" x2="52" y2="440" stroke="#111" stroke-width="4.5" stroke-linecap="round"/><circle cx="448" cy="364" r="30" fill="white" stroke="#111" stroke-width="3.5"/><line x1="448" y1="394" x2="448" y2="436" stroke="#111" stroke-width="4.5" stroke-linecap="round"/><ellipse cx="226" cy="314" rx="124" ry="90" fill="white" stroke="#111" stroke-width="5"/><path d="M190,232 C180,198 196,166 217,146 L290,151 C303,167 298,208 276,234" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M170,126 C170,94 197,70 234,65 C273,60 316,77 326,110 C336,143 320,174 292,184 L196,184 C170,173 160,158 170,126 Z" fill="white" stroke="#111" stroke-width="5" stroke-linejoin="round"/><circle cx="288" cy="106" r="20" fill="white" stroke="#111" stroke-width="4"/><circle cx="293" cy="103" r="9" fill="#111"/><circle cx="313" cy="136" r="7" fill="#111"/><path d="M292,158 C310,176 337,176 351,165" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"/><path d="M306,168 L312,182 L320,168 M321,167 L327,181 L335,167" fill="white" stroke="#111" stroke-width="3" stroke-linejoin="round"/><path d="M273,234 L283,186 L293,234 M293,234 L307,182 L317,234 M317,234 L328,186 L339,237" fill="white" stroke="#111" stroke-width="4" stroke-linejoin="round"/><path d="M348,314 C395,293 436,261 456,218 C461,208 450,203 445,214 C425,245 394,272 354,302" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/><path d="M176,374 L161,425 L150,445 M141,445 L166,445 M166,445 L177,445" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M216,379 L211,430 L206,449 M196,449 L220,449" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M292,389 L281,430 L271,452 M261,452 L286,452" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M330,379 L340,430 L348,452 M338,452 L358,452" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -1171,6 +1199,16 @@ function buildPageBar(cat) {
 document.getElementById('catTabs').addEventListener('click', e => {
   const tab = e.target.closest('.cat-tab');
   if (!tab) return;
+  
+  const isDream = tab.dataset.cat === 'dream';
+  if (isDream && activeCat !== 'dream') {
+    const overlay = document.getElementById('dreamOverlay');
+    overlay.classList.add('show');
+    setTimeout(() => overlay.classList.remove('show'), 2000);
+    // Switch to Draw tool for instant creativity
+    setTool('draw');
+  }
+
   activeCat = tab.dataset.cat;
   document.querySelectorAll('.cat-tab').forEach(t=>t.classList.toggle('active', t===tab));
   buildPageBar(activeCat);
